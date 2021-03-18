@@ -1,0 +1,507 @@
+---
+openapi: 3.0.2
+info:
+  title: blog27 api
+  version: "0.1"
+servers:
+  - url: https://localhost:3000/api/v0
+    description: Local developemnt server
+paths:
+  "/posts":
+    post:
+      summary: Create post.
+      tags:
+        - posts
+      requestBody:
+        "$ref": "#/components/requestBodies/PostBody"
+      responses:
+        "201":
+          description: Created.
+          headers:
+            Content-Location:
+              "$ref": "#/components/headers/ContentLocation"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Post"
+          links:
+            DeletePostById:
+              "$ref": "#/components/links/DeletePostById"
+            GetPostById:
+              "$ref": "#/components/links/GetPostById"
+        "400":
+          description: Bad request.
+          "$ref": "#/components/schemas/ErrorMessage"
+        "401":
+          description: Unauthorized.
+          "$ref": "#/components/schemas/ErrorMessage"
+    get:
+      summary: Returns list of posts.
+      tags:
+        - posts
+      parameters:
+        - in: query
+          name: author
+          description: "Filter posts that match author's name. Query will perform exact match."
+          schema:
+            type: string
+            maxLength: 100
+        - in: query
+          name: title
+          description: "Filter posts that match title. Query will perform partial match."
+          schema:
+            type: string
+            maxLength: 255
+        - in: query
+          name: categories
+          description: "Filter posts by category name. Values should be specified as separate query parameters."
+          schema:
+            type: array
+            minLength: 1
+            items:
+              type: string
+              minLength: 2
+              maxLength: 60
+        - in: query
+          name: tags
+          description: "Filter posts by tag name. Values should be specified as separate query parameters."
+          schema:
+            type: array
+            minLength: 1
+            items:
+              type: string
+              minLength: 2
+              maxLength: 60
+        - in: query
+          name: published_after
+          description: Inclusive start date of published date range.
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: published_before
+          description: Exclusive end date of published date range.
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: sort
+          description:
+            A list of blog post fields indicating sorting order and sorting
+            direction for the returned data. Sorting direction defaults to ascending
+            and can be changed to descending by using minus sign (-) prefix on the requested
+            field.
+          schema:
+            type: string
+            enum:
+              - TITLE
+              - PUBLISHED_DATE
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Post"
+        "400":
+          "$ref": "#/components/responses/BadRequest"
+  "/posts/{postId}":
+    parameters:
+      - $ref: "#/components/parameters/postId"
+    patch:
+      summary: Update parts of posts identified by an ID.
+      tags:
+        - posts
+      requestBody:
+        "$ref": "#/components/requestBodies/PostBody"
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Post"
+          links:
+            DeletePostById:
+              "$ref": "#/components/links/DeletePostById"
+            GetPostById:
+              "$ref": "#/components/links/GetPostById"
+        "404":
+          "$ref": "#/components/responses/NotFound"
+    put:
+      summary: Replace entire post idnetified by an ID.
+      tags:
+        - posts
+      requestBody:
+        "$ref": "#/components/requestBodies/PostBody"
+      responses:
+        "200":
+          description: Ok.
+          headers:
+            Content-Location:
+              "$ref": "#/components/headers/ContentLocation"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Post"
+          links:
+            DeletePostById:
+              "$ref": "#/components/links/DeletePostById"
+            GetPostById:
+              "$ref": "#/components/links/GetPostById"
+        "400":
+          "$ref": "#/components/responses/BadRequest"
+        "404":
+          "$ref": "#/components/responses/NotFound"
+    get:
+      summary: Returns a post by an ID.
+      tags:
+        - posts
+      operationId: getPost
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Post"
+          links:
+            DeletePostById:
+              "$ref": "#/components/links/DeletePostById"
+        "400":
+          "$ref": "#/components/responses/BadRequest"
+        "404":
+          "$ref": "#/components/responses/NotFound"
+    delete:
+      summary: Delete post identified by an ID.
+      tags:
+        - posts
+      operationId: deletePost
+      responses:
+        "200":
+          description: Ok.
+        "404":
+          "$ref": "#/components/schemas/ErrorMessage"
+  "/posts/{postId}/comments":
+    parameters:
+      - $ref: "#/components/parameters/postId"
+    post:
+      summary: "Create post comment."
+      tags:
+        - posts
+      requestBody:
+        $ref: "#/components/requestBodies/CommentBody"
+      responses:
+        201:
+          description: Created.
+          headers:
+            Content-Location:
+              $ref: "#/components/headers/ContentLocation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+          links:
+            GetCommentById:
+              $ref: "#/components/links/GetCommentById"
+            DeleteCommentById:
+              $ref: "#/components/links/DeleteCommentById"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    get:
+      summary: "Get post's comments."
+      tags:
+        - posts
+      parameters:
+        - in: query
+          name: sort
+          description:
+            Request post's comments sorting by `PUBLISHED_DATE`. Sorting direction defaults to ascending
+            and can be changed to descending by using minus sign (-) prefix on the `PUBLISHED_DATE` field.
+          schema:
+            type: string
+            default: PUBLISHED_DATE
+            enum:
+              - PUBLISHED_DATE
+              - -PUBLISHED_DATE
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Comment"
+        "400":
+          "$ref": "#/components/responses/BadRequest"
+  "/posts/{postId}/comments/{commentId}":
+    parameters:
+      - $ref: "#/components/parameters/postId"
+    get:
+      summary: Get comment.
+      tags:
+        - posts
+      parameters:
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The comment ID.
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Comment"
+        "400":
+          "$ref": "#/components/responses/BadRequest"
+    put:
+      summary: Update comment.
+      tags:
+        - posts
+      requestBody:
+        $ref: "#/components/requestBodies/CommentBody"
+      responses:
+        200:
+          description: Ok.
+          headers:
+            Content-Location:
+              $ref: "#/components/headers/ContentLocation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+          links:
+            GetCommentById:
+              $ref: "#/components/links/GetCommentById"
+            DeleteCommentById:
+              $ref: "#/components/links/DeleteCommentById"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete comment identified by an ID.
+      tags:
+        - posts
+      operationId: deleteComment
+      responses:
+        "200":
+          description: Ok.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+components:
+  headers:
+    ContentLocation:
+      description: URI location of a resource.
+      schema:
+        type: string
+  links:
+    GetPostById:
+      operationId: getPost
+      parameters:
+        id: "$response.body#/id"
+      description:
+        The `id` value in the response can be reused as `postId` paramter in
+        `GET /posts/{postId}`
+    DeletePostById:
+      operationId: deletePost
+      parameters:
+        id: "$response.body#/id"
+      description:
+        The `id` value in the response can be reused as `postId` paramter in
+        `DELETE /posts/{postId}`
+    GetCommentById:
+      operationId: getComment
+      parameters:
+        postId: "$request.path.postId"
+        commentId: "$response.body#/id"
+      description:
+        The `id` value in the response can be reused as `commentId` paramter in
+        `GET /posts/{postId}/comments/{commentId}`
+    DeleteCommentById:
+      operationId: deleteComment
+      parameters:
+        postId: "$request.path.postId"
+        commentId: "$response.body#/id"
+      description:
+        The `id` value in the response can be reused as `commentId` paramter in
+        `DELETE /posts/{postId}/comments/{commentId}`
+  parameters:
+    postId:
+      name: postId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: The post ID.
+  requestBodies:
+    CommentBody:
+      description: Request body containinng comment information.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              author:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+              content:
+                type: string
+    PostBody:
+      description: A JSON object containinng post information.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              author:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  name:
+                    type: string
+              title:
+                type: string
+              categories:
+                type: array
+                items:
+                  type: string
+              tags:
+                type: array
+                items:
+                  type: string
+              content:
+                type: string
+  responses:
+    BadRequest:
+      description: Bad request.
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorMessage"
+    NotFound:
+      description: "Not found."
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorMessage"
+    Unauthorized:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/ErrorMessage"
+  schemas:
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    Post:
+      description: Object representing a blog post.
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+        publish_date:
+          type: string
+          format: date-time
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Eric Wright
+        categories:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+          example: Hey yo doctor
+        content:
+          type: string
+          example: this post about the song from 90s
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              author:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Bob Iksinski
+              date:
+                type: string
+                format: date-time
+              content:
+                type: string
+                example: wow, interesting
+    Comment:
+      description: User comment.
+      type: object
+      properties:
+        author:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        content:
+          type: string
+        publish_date:
+          type: string
+          format: date-time
+      required:
+        - author
+        - content
+        - publish_date

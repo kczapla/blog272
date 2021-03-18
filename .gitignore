@@ -1,0 +1,10 @@
+/*
+!/src
+!/docs
+!/.husky
+!package.json
+!.gitignore
+!.eslintignore
+!.eslintrc.json
+!.prettierignore
+!.prettierrc.json
