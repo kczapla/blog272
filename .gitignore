@@ -8,3 +8,4 @@
 !.eslintrc.json
 !.prettierignore
 !.prettierrc.json
+!jest.config.json

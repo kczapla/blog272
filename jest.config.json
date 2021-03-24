@@ -1,0 +1,9 @@
+{
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|js?|mjs?|tsx?|ts?)$",
+    "transform": {
+        "^.+\\.mjs$": "babel-jest"
+    },
+    "moduleFileExtensions": ["js", "mjs"],
+    "setupFilesAfterEnv": ["./src/__tests__/post.matchers.mjs"],
+    "modulePathIgnorePatterns": ["/*.matcher.*"]
+}
