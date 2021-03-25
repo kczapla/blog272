@@ -25,6 +25,47 @@ describe("Given /posts end-point", () => {
   })
 
   describe("when sending GET request", () => {
+    describe("and no query parameters", () => {
+      let response
+      beforeAll(async () => {
+        response = await request(server).get("/api/v0/posts")
+      })
+      it("then response status is 200", () => {
+        expect(response.status).toEqual(200)
+      })
+      it("then response body is an array of posts", () => {
+        expect(response.body).toBeAnArrayOfPosts()
+      })
+    })
+    describe("and author query parameter is equal to 'john'", () => {
+      describe("and 'john' wrote two posts", () => {
+        let response
+        beforeAll(async () => {
+          response = await request(server).get("/api/v0/posts?author=john")
+        })
+        it("then response status is 200", () => {
+          expect(response.status).toEqual(200)
+        })
+        it("then response body is an array of posts with two elements", () => {
+          expect(response.body).toBeAnArrayOfPosts()
+        })
+        it("then posts author is 'john'", () => {
+          expect(response.body.author.name).toBe("john")
+        })
+      })
+    })
+    describe("and author query parameter size is >100", () => {
+      let response
+        beforeAll(async () => {
+          response = await request(server).get("/api/v0/posts?author=john")
+        })
+        it("then response status is 400", () => {
+          expect(response.status).toEqual(400)
+        })
+        it("then response body matches error message schema", () => {
+          expect(response.body).toMatchErrorMessageSchema()
+        })
+    })
     describe("and resource with given id exists", () => {
       let response
       beforeAll(async () => {
