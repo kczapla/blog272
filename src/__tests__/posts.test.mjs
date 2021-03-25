@@ -11,16 +11,6 @@ import makeApiRouter from "../api/"
 
 import request from "supertest"
 
-const createPost = () => console.log("create post")
-const deletePost = () => console.log("delete post")
-
-const supertestCaptureEnd = (done) => {
-  return (err) => {
-    if (err) done.fail(err)
-    else done()
-  }
-}
-
 describe("Given /posts end-point", () => {
   let app, server
 
@@ -35,30 +25,35 @@ describe("Given /posts end-point", () => {
   })
 
   describe("when sending GET request", () => {
-    beforeAll(() => {
-      createPost()
-    })
+    describe("and resource with given id exists", () => {
+      let response
+      beforeAll(async () => {
+        response = await request(server).get("/api/v0/posts/1")
+      })
+      it("then response status is 200", () => {
+        expect(response.status).toEqual(200)
+      })
 
-    afterAll(() => {
-      deletePost()
+      it("then response Content-Type is json", () => {
+        expect(response).contentTypeToBeJson()
+      })
+      it("then response body matches post body schema", () => {
+        expect(response).toMatchPostResponseBodySchema()
+        expect(response).toMatchPostAuthorResponseBody()
+        expect(response).toMatchNthPostCommentResponseBody(0)
+      })
     })
-
-    it("then response status is 200", async () => {
-      const response = await request(server).get("/api/v0/posts/1")
-      expect(response.status).toEqual(200)
-    })
-    it("then response Content-Type is json", (done) => {
-      request(server)
-        .get("/api/v0/posts")
-        .expect("Content-Type", /json/)
-        .end(supertestCaptureEnd(done))
-    })
-
-    it("then response body matches post body schema", async () => {
-      const response = await request(server).get("/api/v0/posts/1")
-      expect(response).toMatchPostResponseBodySchema()
-      expect(response).toMatchPostAuthorResponseBody()
-      expect(response).toMatchNthPostCommentResponseBody(0)
+    describe("and resource with given id doesn't exist", () => {
+      let response
+      beforeAll(async () => {
+        response = await request(server).get("/api/v0/posts/1")
+      })
+      it("then response status is 404", () => {
+        expect(response.status).toEqual(404)
+      })
+      it("then response body matches error message schema", () => {
+        expect(response.body).toMatchErrorMessageSchema()
+      })
     })
   })
 })
