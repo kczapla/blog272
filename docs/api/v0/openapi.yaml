@@ -54,23 +54,23 @@ paths:
             maxLength: 255
         - in: query
           name: categories
-          description: "Filter posts by category name. Values should be specified as separate query parameters."
+          description: "Filter posts by category name. Values should be specified as separate query parameters. Filter will return posts that have atleast one category from send in the query."
           schema:
             type: array
             minLength: 1
             items:
               type: string
-              minLength: 2
+              minLength: 1
               maxLength: 60
         - in: query
           name: tags
-          description: "Filter posts by tag name. Values should be specified as separate query parameters."
+          description: "Filter posts by tag name. Values should be specified as separate query parameters. Filter will return posts that have atleast one category from send in the query."
           schema:
             type: array
             minLength: 1
             items:
               type: string
-              minLength: 2
+              minLength: 1
               maxLength: 60
         - in: query
           name: published_after
