@@ -11,6 +11,22 @@ import makeApiRouter from "../api/"
 
 import request from "supertest"
 
+describe("posts functional tests", () => {
+  let app, server
+
+  beforeAll((done) => {
+    app = new Koa()
+    app.use(makeApiRouter().routes())
+    server = http.createServer(app.callback()).listen(done)
+  })
+
+  afterAll((done) => {
+    server.close(done)
+  })
+
+
+})
+
 describe("Given /posts end-point", () => {
   let app, server
 
@@ -24,33 +40,68 @@ describe("Given /posts end-point", () => {
     server.close(done)
   })
 
-  describe("when sending GET request", () => {
-    describe("and no query parameters", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts")
-      })
-      it("then response status is 200", () => {
-        expect(response.status).toEqual(200)
-      })
-      it("then response body is an array of posts", () => {
-        expect(response.body).toBeAnArrayOfPosts()
-      })
-    })
-    describe("and author query parameter is equal to 'john'", () => {
-      describe("and 'john' wrote two posts", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get("/api/v0/posts?author=john")
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response body is an array of posts with two elements", () => {
-          expect(response.body).toBeAnArrayOfPosts()
-        })
-        it("then posts author is 'john'", () => {
-          expect(response.body.author.name).toBe("john")
+  describe("Given 50 posts on the blog", () => {
+    describe("And 10 are posted by john", () => {
+      describe("And 5 has 'Building' in their title", () => {
+        describe("And 10 has one or more category from [home, plants]", () => {
+          describe("And 5 has one more tag from [cmake, markdown]", () => {
+            describe("And 20 were posted in January 2021", () => {
+              describe("Given url /post", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 50 posts", async () => {
+                    const url = "/api/v0/posts"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(50)
+                  })  
+                })
+              })
+              describe("Given url /posts?author=john", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 10 posts", async () => {
+                    const url = "/api/v0/posts?author=10"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(10)
+                  })
+                })
+              })
+              describe("Given url /posts?title=Building", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 5 posts", async () => {
+                    const url = "/api/v0/posts?author=10"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(5)
+                  })
+                })
+              })
+              describe("Given url /posts?categories=home&categories=plants", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 10 posts", async () => {
+                    const url = "/api/v0/posts?categories=home&categories=plants"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(10)
+                  })
+                })
+              })
+              describe("Given url /posts?tags=cmake&tags=markdown", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 5 posts", async () => {
+                    const url = "/api/v0/posts?tags=cmake&tags=markdown"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(5)
+                  })
+                })
+              })
+              describe("Given url /posts?published_after=2021-01-01&published_before=2021-02-01", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve an array of 20 posts published in January 2021", async () => {
+                    const url = "/api/v0//posts?published_after=2021-01-01&published_before=2021-02-01"
+                    const response = await request(server).get(url)
+                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(20)
+                  })
+                })
+              })
+            })
+          })
         })
       })
     })
@@ -82,26 +133,6 @@ describe("Given /posts end-point", () => {
       })
       it("then response body matches error message schema", () => {
         expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-    describe("and title query parameter is 'Building'", () => {
-      describe("and there are three posts that have 'Building' in their title", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get("/api/v0/posts?title=Building")
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is an array of posts", () => {
-          expect(response.body).toBeAnArrayOfPosts()
-        })
-        it("then response body array has three elements", () => {
-          expect(response.body).toHaveLength(3)
-        })
       })
     })
     describe("and title query parameter is 'Animal'", () => {
@@ -139,47 +170,6 @@ describe("Given /posts end-point", () => {
         expect(response.body).toBeNull()
       })
     })
-    describe("and categories query parameter is [home, plants]", () => {
-      describe("and there are three posts with one these categories", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get(
-            "/api/v0/posts?categories=home&categories=plants"
-          )
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is an array of posts", () => {
-          expect(response.body).toBeAnArrayOfPosts()
-        })
-        it("then response body array has three elements", () => {
-          expect(response.body).toHaveLength(3)
-        })
-      })
-    })
-    describe("and categories query paramer is [build2, cmake]", () => {
-      describe("and there are not posts with these categories", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get(
-            "/api/v0/posts?categories=build2&categories=cmake"
-          )
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is an empty array", () => {
-          expect(response.body).toBeNull()
-        })
-      })
-    })
     describe("and categories query parameter has element that length is <1", () => {
       let response
       beforeAll(async () => {
@@ -213,47 +203,7 @@ describe("Given /posts end-point", () => {
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    describe("and tag query parameter is [home, plants]", () => {
-      describe("and there are three posts with one these tag", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get(
-            "/api/v0/posts?tags=home&tags=plants"
-          )
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is an array of posts", () => {
-          expect(response.body).toBeAnArrayOfPosts()
-        })
-        it("then response body array has three elements", () => {
-          expect(response.body).toHaveLength(3)
-        })
-      })
-    })
-    describe("and tags query paramer is [build2, cmake]", () => {
-      describe("and there are not posts with these tags", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get(
-            "/api/v0/posts?tags=build2&tags=cmake"
-          )
-        })
-        it("then response status is 200", () => {
-          expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is an empty array", () => {
-          expect(response.body).toBeNull()
-        })
-      })
-    })
+    
     describe("and tags query parameter has element that length is <1", () => {
       let response
       beforeAll(async () => {
@@ -285,31 +235,6 @@ describe("Given /posts end-point", () => {
       })
       it("then response body matches error message schema", () => {
         expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-    describe("and published_after query parameter is 2021-01-01", () => {
-      describe("and published_before query paramter is 2021-01-31", () => {
-        describe("and there are three posts in this time span", () => {
-          let response
-          beforeAll(async () => {
-            const veryLongTag = "a".repeat(70)
-            response = await request(server).get(
-              `/api/v0/posts/1?tags=${veryLongTag}`
-            )
-          })
-          it("then response is 200", () => {
-            expect(response.status).toEqual(200)
-          })
-          it("then response Content-Type is json", () => {
-            expect(response).contentTypeToBeJson()
-          })
-          it("then response body is an array of posts", () => {
-            expect(response.body).toBeAnArrayOfPosts()
-          })
-          it("then response body array has three elements", () => {
-            expect(response.body).toHaveLength(3)
-          })
-        })
       })
     })
     describe("and resource with given id exists", () => {

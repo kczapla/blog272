@@ -52,18 +52,22 @@ expect.extend({
     }
     return { pass: true, message: () => "" }
   },
-  contentTypeToBeJson(response) {
-    if (/json/.test(response.header["content-type"])) {
-      return { pass: true, message: () => "" }
+  toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(response, length)   {
+    if (response.status !== 200) {
+      return { pass: false, message: () => "Response status is not 200."}
     }
-    return { pass: false, message: "Response content type is not json." }
-  },
-  toBeAnArrayOfPosts(responseBody) {
-    if (!Array.isArray(responseBody)) {
+    if (!(/json/.test(response.header["content-type"]))) {
+      return { pass: false, message: () => `Response content type is ${response.header["content-type"]}. Should be JSON.`}
+    }
+    if (!Array.isArray(response.body)) {
       return { pass: false, message: () => "Response body is not an array." }
     }
+    if (response.body !== length) {
+      return {pass: false, message: () => `Length response body array is ${response.body.length}. Should be ${length}.`}
+    }
+
     try {
-      responseBody.forEach(hasPostResponseBody)
+      response.body.forEach(hasPostResponseBody)
     } catch (error) {
       const extendedMessage = "Response's array item " + error
       return { pass: false, message: () => extendedMessage }
