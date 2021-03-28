@@ -52,18 +52,29 @@ expect.extend({
     }
     return { pass: true, message: () => "" }
   },
-  toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(response, length)   {
+  toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+    response,
+    length
+  ) {
     if (response.status !== 200) {
-      return { pass: false, message: () => "Response status is not 200."}
+      return { pass: false, message: () => "Response status is not 200." }
     }
-    if (!(/json/.test(response.header["content-type"]))) {
-      return { pass: false, message: () => `Response content type is ${response.header["content-type"]}. Should be JSON.`}
+    if (!/json/.test(response.header["content-type"])) {
+      return {
+        pass: false,
+        message: () =>
+          `Response content type is ${response.header["content-type"]}. Should be JSON.`,
+      }
     }
     if (!Array.isArray(response.body)) {
       return { pass: false, message: () => "Response body is not an array." }
     }
     if (response.body !== length) {
-      return {pass: false, message: () => `Length response body array is ${response.body.length}. Should be ${length}.`}
+      return {
+        pass: false,
+        message: () =>
+          `Length response body array is ${response.body.length}. Should be ${length}.`,
+      }
     }
 
     try {

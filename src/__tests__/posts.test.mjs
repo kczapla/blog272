@@ -23,8 +23,6 @@ describe("posts functional tests", () => {
   afterAll((done) => {
     server.close(done)
   })
-
-
 })
 
 describe("Given /posts end-point", () => {
@@ -51,8 +49,12 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 50 posts", async () => {
                     const url = "/api/v0/posts"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(50)
-                  })  
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      50
+                    )
+                  })
                 })
               })
               describe("Given url /posts?author=john", () => {
@@ -60,7 +62,11 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 10 posts", async () => {
                     const url = "/api/v0/posts?author=10"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(10)
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      10
+                    )
                   })
                 })
               })
@@ -69,16 +75,25 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 5 posts", async () => {
                     const url = "/api/v0/posts?author=10"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(5)
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      5
+                    )
                   })
                 })
               })
               describe("Given url /posts?categories=home&categories=plants", () => {
                 describe("When sending GET request", () => {
                   it("Then recieve an array of 10 posts", async () => {
-                    const url = "/api/v0/posts?categories=home&categories=plants"
+                    const url =
+                      "/api/v0/posts?categories=home&categories=plants"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(10)
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      10
+                    )
                   })
                 })
               })
@@ -87,16 +102,25 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 5 posts", async () => {
                     const url = "/api/v0/posts?tags=cmake&tags=markdown"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(5)
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      5
+                    )
                   })
                 })
               })
               describe("Given url /posts?published_after=2021-01-01&published_before=2021-02-01", () => {
                 describe("When sending GET request", () => {
                   it("Then recieve an array of 20 posts published in January 2021", async () => {
-                    const url = "/api/v0//posts?published_after=2021-01-01&published_before=2021-02-01"
+                    const url =
+                      "/api/v0//posts?published_after=2021-01-01&published_before=2021-02-01"
                     const response = await request(server).get(url)
-                    expect(response).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(20)
+                    expect(
+                      response
+                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
+                      20
+                    )
                   })
                 })
               })
@@ -203,7 +227,7 @@ describe("Given /posts end-point", () => {
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    
+
     describe("and tags query parameter has element that length is <1", () => {
       let response
       beforeAll(async () => {
