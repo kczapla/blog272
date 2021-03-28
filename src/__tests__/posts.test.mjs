@@ -49,36 +49,38 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 50 posts", async () => {
                     const url = "/api/v0/posts"
                     const response = await request(server).get(url)
-                    expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      50
-                    )
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(50)
+                    expect(response.body).toBeAnArrayOfPosts()
                   })
                 })
               })
               describe("Given url /posts?author=john", () => {
                 describe("When sending GET request", () => {
                   it("Then recieve an array of 10 posts", async () => {
-                    const url = "/api/v0/posts?author=10"
+                    const url = "/api/v0/posts?author=john"
                     const response = await request(server).get(url)
-                    expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      10
-                    )
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(10)
+                    expect(response.body).eachPostAuthorEquals({
+                      id: 1,
+                      name: "john",
+                    })
                   })
                 })
               })
               describe("Given url /posts?title=Building", () => {
                 describe("When sending GET request", () => {
                   it("Then recieve an array of 5 posts", async () => {
-                    const url = "/api/v0/posts?author=10"
+                    const url = "/api/v0/posts?title=Building"
                     const response = await request(server).get(url)
-                    expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      5
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(5)
+                    expect(response.body).arrayToContainABCInTitleOfEachPost(
+                      "Building"
                     )
                   })
                 })
@@ -89,11 +91,12 @@ describe("Given /posts end-point", () => {
                     const url =
                       "/api/v0/posts?categories=home&categories=plants"
                     const response = await request(server).get(url)
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(10)
                     expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      10
-                    )
+                      response.body
+                    ).arrayToHaveOneOfTheCategoryInEachPost(["home", "plants"])
                   })
                 })
               })
@@ -102,11 +105,13 @@ describe("Given /posts end-point", () => {
                   it("Then recieve an array of 5 posts", async () => {
                     const url = "/api/v0/posts?tags=cmake&tags=markdown"
                     const response = await request(server).get(url)
-                    expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      5
-                    )
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(10)
+                    expect(response.body).arrayToHaveOneOfTheTagInEachPost([
+                      "cmake",
+                      "markdown",
+                    ])
                   })
                 })
               })
@@ -114,13 +119,26 @@ describe("Given /posts end-point", () => {
                 describe("When sending GET request", () => {
                   it("Then recieve an array of 20 posts published in January 2021", async () => {
                     const url =
-                      "/api/v0//posts?published_after=2021-01-01&published_before=2021-02-01"
+                      "/api/v0/posts?published_after=2021-01-01&published_before=2021-02-01"
                     const response = await request(server).get(url)
-                    expect(
-                      response
-                    ).toMatchSuccessfulGETPostsRootResponseWithNLengthArrayOfPosts(
-                      20
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body).toHaveLength(10)
+                    expect(response.body).postsArrayIsPublishedWithinRange(
+                      new Date("2021-01-01"),
+                      new Date("2021-02-01")
                     )
+                  })
+                })
+              })
+              describe("Given url /posts/1", () => {
+                describe("When sending GET request", () => {
+                  it("Then recieve post with id equal to one", async () => {
+                    const url = "/api/v0/posts/1"
+                    const response = await request(server).get(url)
+                    expect(response.status).toEqual(200)
+                    expect(response.header["content-type"]).toMatch(/json/)
+                    expect(response.body.id).toEqual(1)
                   })
                 })
               })
@@ -259,24 +277,6 @@ describe("Given /posts end-point", () => {
       })
       it("then response body matches error message schema", () => {
         expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-    describe("and resource with given id exists", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts/1")
-      })
-      it("then response status is 200", () => {
-        expect(response.status).toEqual(200)
-      })
-
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches post body schema", () => {
-        expect(response).toMatchPostResponseBodySchema()
-        expect(response).toMatchPostAuthorResponseBody()
-        expect(response).toMatchNthPostCommentResponseBody(0)
       })
     })
     describe("and resource with given id doesn't exist", () => {
