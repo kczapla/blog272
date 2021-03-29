@@ -142,152 +142,127 @@ describe("Given /posts end-point", () => {
                   })
                 })
               })
+              describe("Given url /posts?title=Animal", () => {
+                describe("And there are no posts with such title", () => {
+                  describe("When sending GET request", () => {
+                    it("Then recieve an error", async () => {
+                      const response = await request(server).get(
+                        "/api/v0/posts?title=Animal"
+                      )
+                      expect(response.status).toEqual(200)
+                      expect(response.header["content-type"]).toMatch(/json/)
+                      expect(response.body).toBeNull()
+                    })
+                  })
+                })
+              })
             })
           })
         })
       })
     })
-    describe("and author query parameter size is >100", () => {
-      let response
-      beforeAll(async () => {
+  })
+  describe("Given url /posts?author=<string that has over 100 chars>", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
         const veryLongAuthorName = "a".repeat(120)
-        response = await request(server).get(
+        const response = await request(server).get(
           `/api/v0/posts?author=${veryLongAuthorName}`
         )
-      })
-      it("then response status is 400", () => {
         expect(response.status).toEqual(400)
+        expect(response.header["content-type"]).toMatch(/json/)
+        expect(response).toMatchErrorMessageSchema()
       })
-      it("then response body matches error message schema", () => {
+    })
+  })
+  describe("Given url /posts?author=jo#$n", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
+        const response = await request(server).get("/api/v0/posts?author=jo#$n")
+        expect(response.status).toEqual(400)
+        expect(response.header["content-type"]).toMatch(/json/)
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    describe("and author query parameter contains non-alphanumeric characters", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts?author=jo#hn")
-      })
-      it("then response status is 400", () => {
-        expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches error message schema", () => {
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-    describe("and title query parameter is 'Animal'", () => {
-      describe("and there are not posts that have 'Animal' in their title", () => {
-        let response
-        beforeAll(async () => {
-          response = await request(server).get("/api/v0/posts?title=Animal")
-        })
-        it("then response status is 200", () => {
+  })
+  describe("Given url /posts?title=Animal", () => {
+    describe("And there are no posts with such title", () => {
+      describe("When sending GET request", () => {
+        it("Then recieve an error", async () => {
+          const response = await request(server).get(
+            "/api/v0/posts?title=Animal"
+          )
           expect(response.status).toEqual(200)
-        })
-        it("then response Content-Type is json", () => {
-          expect(response).contentTypeToBeJson()
-        })
-        it("then response body is empty", () => {
+          expect(response.header["content-type"]).toMatch(/json/)
           expect(response.body).toBeNull()
         })
       })
     })
-    describe("and title query parameter length is >255", () => {
-      let response
-      beforeAll(async () => {
+  })
+  describe("Given url /posts?title=<string that has over 255 chars>", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
         const veryLongTitle = "a".repeat(300)
-        response = await request(server).get(
+        const response = await request(server).get(
           `/api/v0/posts?title=${veryLongTitle}`
         )
-      })
-      it("then response status is 400", () => {
         expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body is empty", () => {
-        expect(response.body).toBeNull()
-      })
-    })
-    describe("and categories query parameter has element that length is <1", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts/1?categories=")
-      })
-      it("then response status is 400", () => {
-        expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches error message schema", () => {
+        expect(response.header["content-type"]).toMatch(/json/)
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    describe("and categories query parameter has element that length is >60", () => {
-      let response
-      beforeAll(async () => {
+  })
+  describe("Given url /posts?categories=", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
+        const response = await request(server).get("/api/v0/posts?categories=")
+        expect(response.status).toEqual(400)
+        expect(response.header["content-type"]).toMatch(/json/)
+        expect(response.body).toMatchErrorMessageSchema()
+      })
+    })
+  })
+  describe("Given url /posts?categories=<category that is over 60 chars", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
         const veryLongCategory = "a".repeat(70)
-        response = await request(server).get(
+        const response = await request(server).get(
           `/api/v0/posts/1?categories=${veryLongCategory}`
         )
-      })
-      it("then response status is 400", () => {
         expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches error message schema", () => {
+        expect(response.header["content-type"]).toMatch(/json/)
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-
-    describe("and tags query parameter has element that length is <1", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts/1?tags=")
-      })
-      it("then response status is 400", () => {
+  })
+  describe("Given url /posts?tags=", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
+        const response = await request(server).get("/api/v0/posts?tags=")
         expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches error message schema", () => {
+        expect(response.header["content-type"]).toMatch(/json/)
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    describe("and tags query parameter has element that length is >60", () => {
-      let response
-      beforeAll(async () => {
-        const veryLongTag = "a".repeat(70)
-        response = await request(server).get(
-          `/api/v0/posts/1?tags=${veryLongTag}`
+  })
+  describe("Given url /posts?tags=<tag that is over 60 chars", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
+        const veryLongCategory = "a".repeat(70)
+        const response = await request(server).get(
+          `/api/v0/posts/1?tags=${veryLongCategory}`
         )
-      })
-      it("then response status is 400", () => {
         expect(response.status).toEqual(400)
-      })
-      it("then response Content-Type is json", () => {
-        expect(response).contentTypeToBeJson()
-      })
-      it("then response body matches error message schema", () => {
+        expect(response.header["content-type"]).toMatch(/json/)
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
-    describe("and resource with given id doesn't exist", () => {
-      let response
-      beforeAll(async () => {
-        response = await request(server).get("/api/v0/posts/1")
-      })
-      it("then response status is 404", () => {
+  })
+  describe("Given url /posts/1", () => {
+    describe("When sending GET request", () => {
+      it("Then recieve an error", async () => {
+        const response = await request(server).get("/api/v0/posts/1")
         expect(response.status).toEqual(404)
-      })
-      it("then response body matches error message schema", () => {
         expect(response.body).toMatchErrorMessageSchema()
       })
     })
