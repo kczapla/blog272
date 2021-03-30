@@ -28,6 +28,15 @@ const hasPostCommentResponseBody = (responseBody) => {
 }
 
 expect.extend({
+  toMatchPostResponseBody(response) {
+    try {
+      hasPostResponseBody(response.body)
+      hasPostAuthorResponseBody(response.body.author)
+    } catch (error) {
+      return { pass: false, message: () => error }
+    }
+    return { pass: true, message: () => "" }
+  },
   toMatchNthPostCommentResponseBody(response, nthComment) {
     try {
       hasPostCommentResponseBody(response.body.comments[nthComment])
