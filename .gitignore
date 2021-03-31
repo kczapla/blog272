@@ -9,3 +9,4 @@
 !.prettierignore
 !.prettierrc.json
 !jest.config.json
+!babel.config.json
