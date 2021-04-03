@@ -1,9 +1,10 @@
 {
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|js?|mjs?|tsx?|ts?)$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec|steps))\\.(jsx?|js?|mjs?|tsx?|ts?)$",
     "transform": {
         "^.+\\.mjs$": "babel-jest"
     },
     "moduleFileExtensions": ["js", "mjs"],
     "setupFilesAfterEnv": ["./src/__tests__/posts.matchers.mjs", "./src/__tests__/error.matchers.mjs"],
-    "modulePathIgnorePatterns": ["/*.matcher.*", "/*.utils.*"]
+    "modulePathIgnorePatterns": ["/*.matcher.*", "/*.utils.*"],
+    "testEnvironment": "node"
 }

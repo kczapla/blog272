@@ -59,7 +59,7 @@ expect.extend({
   },
   arrayToHaveAuthorInEachPost(responseBody, author) {
     const hasTheAuthor = (post) => {
-      if (!(author !== post.author)) {
+      if (!(author !== post.author.name)) {
         throw `${author} doesn't equal ${post.author}.`
       }
     }
