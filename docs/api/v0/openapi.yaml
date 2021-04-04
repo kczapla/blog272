@@ -42,16 +42,17 @@ paths:
       parameters:
         - in: query
           name: author
-          description: "Filter posts that match author's name. Query will perform exact match."
+          description: "Filter posts that match author's name. Query will perform exact match. There can be only one author's query in query string."
+          schema:
+            type: string
+            maxLength: 32
+            minLength: 3
+        - in: query
+          name: title
+          description: "Filter posts that match title. Query will perform partial match. There can be only one title's query in query string."
           schema:
             type: string
             maxLength: 100
-        - in: query
-          name: title
-          description: "Filter posts that match title. Query will perform partial match."
-          schema:
-            type: string
-            maxLength: 255
         - in: query
           name: categories
           description: "Filter posts by category name. Values should be specified as separate query parameters. Filter will return posts that have atleast one category from send in the query."
@@ -61,7 +62,7 @@ paths:
             items:
               type: string
               minLength: 1
-              maxLength: 60
+              maxLength: 20
         - in: query
           name: tags
           description: "Filter posts by tag name. Values should be specified as separate query parameters. Filter will return posts that have atleast one category from send in the query."
@@ -71,18 +72,18 @@ paths:
             items:
               type: string
               minLength: 1
-              maxLength: 60
+              maxLength: 20
         - in: query
           name: published_after
-          description: Inclusive start date of published date range.
+          description: Inclusive start date of published date range. There can be only one published_after's query in query string.
           required: false
           schema:
             type: string
             format: date-time
         - in: query
           name: published_before
-          description: Exclusive end date of published date range.
-          required: false
+          description: Exclusive end date of published date range. There can be only one published_before's query in query string.
+          required: fals
           schema:
             type: string
             format: date-time

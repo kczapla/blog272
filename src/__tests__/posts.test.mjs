@@ -40,29 +40,6 @@ describe("Given /posts end-point", () => {
     server.close(done)
   })
 
-  describe("Given url /posts?author=<string that has over 100 chars>", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const veryLongAuthorName = "a".repeat(120)
-        const response = await request(server).get(
-          `/api/v0/posts?author=${veryLongAuthorName}`
-        )
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response).toMatchErrorMessageSchema()
-      })
-    })
-  })
-  describe("Given url /posts?author=jo#$n", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const response = await request(server).get("/api/v0/posts?author=jo#$n")
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-  })
   describe("Given url /posts?title=Animal", () => {
     describe("And there are no posts with such title", () => {
       describe("When sending GET request", () => {
@@ -74,65 +51,6 @@ describe("Given /posts end-point", () => {
           expect(response.header["content-type"]).toMatch(/json/)
           expect(response.body).toBeNull()
         })
-      })
-    })
-  })
-  describe("Given url /posts?title=<string that has over 255 chars>", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const veryLongTitle = "a".repeat(300)
-        const response = await request(server).get(
-          `/api/v0/posts?title=${veryLongTitle}`
-        )
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-  })
-  describe("Given url /posts?categories=", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const response = await request(server).get("/api/v0/posts?categories=")
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-  })
-  describe("Given url /posts?categories=<category that is over 60 chars", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const veryLongCategory = "a".repeat(70)
-        const response = await request(server).get(
-          `/api/v0/posts/1?categories=${veryLongCategory}`
-        )
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-  })
-  describe("Given url /posts?tags=", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const response = await request(server).get("/api/v0/posts?tags=")
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
-      })
-    })
-  })
-  describe("Given url /posts?tags=<tag that is over 60 chars", () => {
-    describe("When sending GET request", () => {
-      it("Then recieve an error", async () => {
-        const veryLongCategory = "a".repeat(70)
-        const response = await request(server).get(
-          `/api/v0/posts/1?tags=${veryLongCategory}`
-        )
-        expect(response.status).toEqual(400)
-        expect(response.header["content-type"]).toMatch(/json/)
-        expect(response.body).toMatchErrorMessageSchema()
       })
     })
   })
