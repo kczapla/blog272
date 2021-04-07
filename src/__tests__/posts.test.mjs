@@ -54,35 +54,6 @@ describe("Given /posts end-point", () => {
       })
     })
   })
-  describe("Given url /posts", () => {
-    describe("And post object in request body", () => {
-      describe("When sending POST request", () => {
-        it("Then create post", async () => {
-          const postBody = makePostRequestBody()
-          const response = await request(server).post("/posts").send(postBody)
-          expect(response.status).toEqual(201)
-          expect(response.header["content-location"]).toEqual(/\/posts\/\d+/)
-          expect(response.body).toMatchPostResponseBody()
-        })
-      })
-    })
-  })
-  describe("Given url /posts", () => {
-    describe.each(["author", "title", "categories", "tags", "content"])(
-      "And post object in request body is missing %p field",
-      (fieldName) => {
-        describe("When sending POST request", () => {
-          it("Then recieve an error message", async () => {
-            const postBody = makePostRequestBody()
-            delete postBody[fieldName]
-            const response = await request(server).post("/posts").send(postBody)
-            expect(response.status).toEqual(400)
-            expect(response.body).toMatchErrorMessageSchema()
-          })
-        })
-      }
-    )
-  })
   describe("Given url /posts/X", () => {
     describe("And post with id X exists", () => {
       describe("And new property values in post object in request body", () => {

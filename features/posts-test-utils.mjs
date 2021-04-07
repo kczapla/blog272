@@ -1,3 +1,5 @@
+import axios from "axios"
+
 class PostsQueryBuilder {
   constructor(url) {
     this.url = url + "/posts?"
@@ -49,4 +51,41 @@ export function createCategoryQuery(categories) {
 
 export function createTagQuery(tags) {
   return buildQuery(tags, (tag) => postQueryBuilder.addCategory(tag))
+}
+
+export const makePostRequestBody = () => {
+  return {
+    author: {
+      id: 1,
+      name: "john",
+    },
+    title: "Test title",
+    categories: ["cat1", "cat2"],
+    tags: ["tag1", "tag2"],
+    content: "Test content",
+  }
+}
+
+export const makePostRequestBodyWithout = (propertyName) => {
+  let postRequestBody = makePostRequestBody()
+  delete postRequestBody[propertyName]
+
+  return postRequestBody
+}
+
+export const getJWTToken = async () => {
+  await axios
+    .post(url + "/login", {
+      email: "bob@myblog.com",
+      password: "bobpasswd",
+    })
+    .then((response) => {
+      return response.body.token
+    })
+}
+
+export const createPost = async (postBody, jwtToken) => {
+  return axios.post(url, postBody, {
+    auth: `Bearer ${jwtToken}`,
+  })
 }
