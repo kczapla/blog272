@@ -66,6 +66,11 @@ export const makePostRequestBody = () => {
   }
 }
 
+export const makeCustomPostRequestBody = (customProperties) => {
+  const postBody = makeCustomPostRequestBody()
+  return Object.assign(postBody, customProperties)
+}
+
 export const makePostRequestBodyWithout = (propertyName) => {
   let postRequestBody = makePostRequestBody()
   delete postRequestBody[propertyName]
@@ -88,4 +93,8 @@ export const createPost = async (postBody, jwtToken) => {
   return axios.post(url, postBody, {
     auth: `Bearer ${jwtToken}`,
   })
+}
+
+export const updatePost = async (putBody, jwtToken) => {
+  return axios.put(url, putBody, { auth: `Bearer ${jwtToken}` })
 }
