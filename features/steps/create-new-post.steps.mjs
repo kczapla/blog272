@@ -6,7 +6,7 @@ import {
   makePostRequestBodyWithout,
   createPost,
   getJWTToken,
-} from "./posts-test-utils"
+} from "./utils/posts-test-utils"
 
 const feature = loadFeature("./features/create-new-post.feature")
 const baseUrl = "http://127.0.0.1:3000/api/v0"

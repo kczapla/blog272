@@ -1,4 +1,7 @@
 import axios from "axios"
+import url from "./url"
+import login from "./log-in"
+import postsApi from "./api/posts"
 
 class PostsQueryBuilder {
   constructor(url) {
@@ -27,8 +30,7 @@ class PostsQueryBuilder {
   }
 }
 
-const url = "http://127.0.0.1:3000/api/v0/posts"
-const postQueryBuilder = new PostsQueryBuilder(url)
+const postQueryBuilder = new PostsQueryBuilder(url.posts())
 
 function buildQuery(values, callback) {
   values.split(",").forEach(callback)
@@ -79,22 +81,13 @@ export const makePostRequestBodyWithout = (propertyName) => {
 }
 
 export const getJWTToken = async () => {
-  await axios
-    .post(url + "/login", {
-      email: "bob@myblog.com",
-      password: "bobpasswd",
-    })
-    .then((response) => {
-      return response.body.token
-    })
+  return await login.asBob()
 }
 
 export const createPost = async (postBody, jwtToken) => {
-  return axios.post(url, postBody, {
-    auth: `Bearer ${jwtToken}`,
-  })
+  return await postsApi.create(postBody, jwtToken)
 }
 
-export const updatePost = async (putBody, jwtToken) => {
-  return axios.put(url, putBody, { auth: `Bearer ${jwtToken}` })
+export const updatePost = async (putBody, postId, jwtToken) => {
+  return await postsApi.update(putBody, postId, jwtToken)
 }

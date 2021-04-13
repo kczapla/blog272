@@ -1,7 +1,10 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
 import axios from "axios"
-import { createAuthorQuery, createPostTitle } from "./posts-test-utils"
-import { createCategoryQuery, createTagQuery } from "./posts-test-utils.mjs"
+import { createAuthorQuery, createPostTitle } from "./utils/posts-test-utils"
+import {
+  createCategoryQuery,
+  createTagQuery,
+} from "./utils/posts-test-utils.mjs"
 
 const feature = loadFeature("./features/posts-queries-validation.feature")
 

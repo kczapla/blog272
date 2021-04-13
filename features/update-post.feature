@@ -5,16 +5,16 @@ Feature: Update post
 Scenario: Update post
 Given Bob is logged in
 And he created post sometime ago
-And now he wants to update it
-When sending updated content to the server
+And he wants to update it
+When he sends an updated content to the server
 Then the server should handle it and return success status
 
 Scenario Outline: Do not update post if required property is missing
 Given Bob is logged in
 And he created post sometime ago
-And now he wants to update it
+And he wants to update it
 But he forgot to put <PropertyName> in request body
-When sending update content to the server
+When he sends an update content to the server
 Then the server should reject the request and return failure status
 
 Examples:
@@ -25,3 +25,16 @@ Examples:
     | categories   |
     | tags         | 
     | content      |
+
+Scenario: Reject update request if post doesn't exist
+Given Bob is logged in
+And he wants to update a post
+But the post doesn't exist
+When he sends an update request to the server
+Then the server should reject the request and return failure status
+
+Scenario: Reject an update request if not send by post author
+Given Mark published a post
+But Bob wants to update it
+When he sends an update request to the server
+Then the server should reject the request and return failure status
