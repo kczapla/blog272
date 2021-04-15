@@ -1,38 +1,38 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
 
+import { makeBob, makeMark } from "./utils/authors"
 import {
-  makePostRequestBody,
-  makePostRequestBodyWithout,
-  makeCustomPostRequestBody,
-  createPost,
-  getJWTToken,
-} from "./utils/posts-test-utils"
-
-import login from "./utils/log-in"
-import postRequestBody from "./utils/post-request-body"
-import postsApi from "./utils/api/posts"
+  defaultPost,
+  aBitDifferentDefaultPost,
+} from "./utils/post-request-body-templates"
 
 const feature = loadFeature("./features/update-post.feature")
 
 defineFeature(feature, (test) => {
   test("Update post", ({ given, and, when, then }) => {
-    let token
+    const bob = makeBob()
     given("Bob is logged in", async () => {
-      token = await getJWTToken()
+      await bob.login()
     })
 
+    let publishedPostId
     and("he created post sometime ago", async () => {
-      await createPost(makePostRequestBody(), token)
+      const bobsPostRequestBody = bob.writePost(defaultPost)
+      const postPublishResponse = await bob.publishPost(bobsPostRequestBody)
+      publishedPostId = postPublishResponse.body.id
     })
 
     let updatePostRequestBody
     and("he wants to update it", () => {
-      updatePostRequestBody = makeCustomPostRequestBody({ title: "new title" })
+      updatePostRequestBody = bob.writePost(aBitDifferentDefaultPost)
     })
 
     let updatePostResponse
     when("he sends an updated content to the server", async () => {
-      updatePostResponse = await updatePost(updatePostRequestBody, token)
+      updatePostResponse = await bob.updatePost(
+        publishedPostId,
+        updatePostRequestBody
+      )
     })
 
     then("the server should handle it and return success status", () => {
@@ -40,8 +40,8 @@ defineFeature(feature, (test) => {
       expect(updatePostResponse.header["content-location"]).toEqual(
         /\/posts\/\d+/
       )
-      expect(response.body).toMatchPostResponseBody()
-      expect(response.body.title).toMatchObject(updatePostResponse)
+      expect(updatePostResponse.body).toMatchPostResponseBody()
+      expect(updatePostResponse.body.title).toMatchObject(updatePostRequestBody)
     })
   })
 
@@ -52,36 +52,40 @@ defineFeature(feature, (test) => {
     when,
     then,
   }) => {
-    let token
+    const bob = makeBob()
     given("Bob is logged in", async () => {
-      token = await getJWTToken()
+      await bob.login()
     })
 
-    let postToUpdateId
+    let publishedPostId
     and("he created post sometime ago", async () => {
-      response = await createPost(makePostRequestBody(), token)
-      postToUpdateId = response.body.id
+      const bobsPostRequestBody = bob.writePost(defaultPost)
+      const postPublishedResponse = await bob.publishPost(bobsPostRequestBody)
+      publishedPostId = postPublishedResponse.body.id
     })
 
     let updatePostRequestBody
     and("he wants to update it", () => {
-      updatePostRequestBody = makePostRequestBody()
+      updatePostRequestBody = bob.writePost(aBitDifferentDefaultPost)
     })
 
     but(/^he forgot to put (.*) in request body$/, (property) => {
       delete updatePostRequestBody[property]
     })
 
-    let response
+    let updateResponse
     when("he sends an update content to the server", async () => {
-      response = await updatePost(updatePostRequestBody, postToUpdateId, token)
+      updateResponse = await bob.updatePost(
+        publishedPostId,
+        updatePostRequestBody
+      )
     })
 
     then(
       "the server should reject the request and return failure status",
       () => {
-        expect(response.status).toEqual(400)
-        expect(response.body).toMatchErrorMessageSchema()
+        expect(updateResponse.status).toEqual(400)
+        expect(updateResponse.body).toMatchErrorMessageSchema()
       }
     )
   })
@@ -92,14 +96,14 @@ defineFeature(feature, (test) => {
     when,
     then,
   }) => {
-    let token
+    const bob = makeBob()
     given("Bob is logged in", async () => {
-      token = await getJWTToken()
+      await bob.login()
     })
 
     let updatePostRequestBody
     and("he wants to update a post", () => {
-      updatePostRequestBody = makePostRequestBody()
+      updatePostRequestBody = bob.writePost(defaultPost)
     })
 
     let postToUpdateId
@@ -107,16 +111,19 @@ defineFeature(feature, (test) => {
       postToUpdateId = 1
     })
 
-    let response
+    let postUpdateResponse
     when("he sends an update request to the server", async () => {
-      response = await updatePost(updatePostRequestBody, postToUpdateId, token)
+      postUpdateResponse = await bob.updatePost(
+        postToUpdateId,
+        updatePostRequestBody
+      )
     })
 
     then(
       "the server should reject the request and return failure status",
       () => {
-        expect(response.status).toEqual(400)
-        expect(response.body).toMatchErrorMessageSchema()
+        expect(postUpdateResponse.status).toEqual(400)
+        expect(postUpdateResponse.body).toMatchErrorMessageSchema()
       }
     )
   })
@@ -127,31 +134,34 @@ defineFeature(feature, (test) => {
     when,
     then,
   }) => {
-    let marksPostId
+    let postPublishedByMarkId
     given("Mark published a post", async () => {
-      const token = await login.asMark()
-      const requestBody = postRequestBody.createdBy({ id: 2, name: "Mark" })
-      const response = await postsApi.create(requestBody, token)
-      marksPostId = response.body.id
+      const mark = makeMark()
+      await mark.login()
+
+      const publishPostRequestBody = mark.writePost(defaultPost)
+      const postPublishResponse = mark.publishPost(publishPostRequestBody)
+
+      postPublishedByMarkId = postPublishResponse.body.id
     })
 
-    let bobsToken
-    let bobsRequestBody
+    const bob = makeBob()
+    let bobsUpdateRequestBody
     but("Bob wants to update it", async () => {
-      bobsToken = await login.asBob()
-      bobsRequestBody = postRequestBody.createdBy({ id: 1, name: "Bob" })
+      await bob.login()
+      bobsUpdateRequestBody = bob.writePost(defaaultPost)
     })
 
-    let response
+    let bobsPostUpdateResponse
     when("he sends an update request to the server", async () => {
-      response = postsApi.update(bobsRequestBody, marksPostId, bobsToken)
+      bobsPostUpdateResponse = await bob.updatePost(postPublishedByMarkId, bobsUpdateRequestBody)
     })
 
     then(
       "the server should reject the request and return failure status",
       () => {
-        expect(response.status).toEqual(401)
-        expect(response.body).toMatchErrorMessageSchema()
+        expect(bobsPostUpdateResponse.status).toEqual(401)
+        expect(bobsPostUpdateResponse.body).toMatchErrorMessageSchema()
       }
     )
   })

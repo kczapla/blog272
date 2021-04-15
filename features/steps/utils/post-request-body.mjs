@@ -1,14 +1,35 @@
-const createdBy = (user) => {
-  return {
-    author: {
-      id: user.id,
-      name: user.name,
-    },
-    title: "Test title",
-    categories: ["cat1", "cat2"],
-    tags: ["tag1", "tag2"],
-    content: "Test content",
+export class CreatePostRequestBodyBuilder {
+  constructor() {
+    this.body = {
+      author: {},
+      title: "",
+      categories: [],
+      tags: [],
+      content: "",
+    }
+  }
+
+  addAuthor(authorId, authorName) {
+    this.body.author = { id: authorId, name: authorName }
+  }
+
+  addTitle(title) {
+    this.body.title = title
+  }
+
+  addCategories(categories) {
+    this.body.categories.push(...categories)
+  }
+
+  addTags(tags) {
+    this.body.tags.push(...tags)
+  }
+
+  addContent(content) {
+    this.body.content = content
+  }
+
+  build() {
+    return this.body
   }
 }
-
-export default { createdBy }
