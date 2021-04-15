@@ -13,4 +13,13 @@ const update = async (putBody, postId, jwtToken) => {
   })
 }
 
-export default { create, update }
+const index = async (query) => {
+  let indexUrl = url.posts()
+  if (query !== "") {
+    indexUrl += "?" + query
+  }
+
+  return await axios.get(indexUrl)
+}
+
+export default { create, update, index }
