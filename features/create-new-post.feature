@@ -9,8 +9,9 @@ Then the server should handle it and return success status
 
 Scenario Outline: Do not create post if required property is missing
 Given user is logged-in as Bob
-And request body is missing <PropertyName>
-When user wants to publish a new post
+And he wrote a post
+But he forgot to put <PropertyName> in request body
+When he wants to publish a new post
 Then the server should reject the reuqest and return failure status
 
 Examples:

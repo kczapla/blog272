@@ -1,7 +1,4 @@
-import axios from "axios"
 import url from "./url"
-import login from "./log-in"
-import postsApi from "./api/posts"
 
 class PostsQueryBuilder {
   constructor(url) {
@@ -78,16 +75,4 @@ export const makePostRequestBodyWithout = (propertyName) => {
   delete postRequestBody[propertyName]
 
   return postRequestBody
-}
-
-export const getJWTToken = async () => {
-  return await login.asBob()
-}
-
-export const createPost = async (postBody, jwtToken) => {
-  return await postsApi.create(postBody, jwtToken)
-}
-
-export const updatePost = async (putBody, postId, jwtToken) => {
-  return await postsApi.update(putBody, postId, jwtToken)
 }

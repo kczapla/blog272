@@ -154,7 +154,10 @@ defineFeature(feature, (test) => {
 
     let bobsPostUpdateResponse
     when("he sends an update request to the server", async () => {
-      bobsPostUpdateResponse = await bob.updatePost(postPublishedByMarkId, bobsUpdateRequestBody)
+      bobsPostUpdateResponse = await bob.updatePost(
+        postPublishedByMarkId,
+        bobsUpdateRequestBody
+      )
     })
 
     then(

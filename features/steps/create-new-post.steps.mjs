@@ -1,62 +1,62 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
-import axios from "axios"
 
-import {
-  makePostRequestBody,
-  makePostRequestBodyWithout,
-  createPost,
-  getJWTToken,
-} from "./utils/posts-test-utils"
+import { makeBob } from "./utils/authors"
+import { defaultPost } from "./utils/post-request-body-templates"
 
 const feature = loadFeature("./features/create-new-post.feature")
-const baseUrl = "http://127.0.0.1:3000/api/v0"
-const postsUrl = baseUrl + "/posts"
 
 defineFeature(feature, (test) => {
   test("Create new post by logged in user", ({ given, when, then }) => {
-    let token
+    const bob = makeBob()
     given("user is logged-in as Bob", async () => {
-      token = await getJWTToken()
+      await bob.login()
     })
 
     let response
     when("user want to publish a new post", async () => {
-      response = await createPost(makePostRequestBody(), token)
+      const publishRequestBody = bob.writePost(defaultPost)
+      response = await bob.publishPost(publishRequestBody)
     })
 
     then("the server should handle it and return success status", () => {
       expect(response.status).toEqual(201)
       expect(response.header["content-location"]).toEqual(/\/posts\/\d+/)
       expect(response.body).toMatchPostResponseBody()
+      expect(response.body).toMatchObject(bob.writePost(defaultPost))
     })
   })
 
   test("Do not create post if required property is missing", ({
     given,
     and,
+    but,
     when,
     then,
   }) => {
-    let token
+    const bob = makeBob()
     given("user is logged-in as Bob", async () => {
-      token = await getJWTToken()
+      await bob.login()
     })
 
-    let postRequestBody
-    and(/^request body is missing (.*)$/, (fieldName) => {
-      postRequestBody = makePostRequestBodyWithout(fieldName)
+    let createPostRequestBody
+    and("he wrote a post", () => {
+      createPostRequestBody = bob.writePost(defaultPost)
     })
 
-    let requestResponse
-    when("user wants to publish a new post", async () => {
-      requestResponse = await createPost(postRequestBody, token)
+    but(/^he forgot to put (.*) in request body$/, (propertyName) => {
+      delete createPostRequestBody[propertyName]
+    })
+
+    let postPublishResponse
+    when("he wants to publish a new post", async () => {
+      postPublishResponse = await bob.publishPost(createPostRequestBody)
     })
 
     then(
       "the server should reject the reuqest and return failure status",
       () => {
-        expect(requestResponse.status).toEqual(400)
-        expect(requestResponse.body).toMatchErrorMessageSchema()
+        expect(postPublishResponse.status).toEqual(400)
+        expect(postPublishResponse.body).toMatchErrorMessageSchema()
       }
     )
   })
