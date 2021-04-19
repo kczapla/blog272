@@ -25,6 +25,10 @@ class Author {
   async updatePost(postId, requestBody) {
     return await update(postId, requestBody, this.jwtToken)
   }
+
+  async updatePostProperty(postId, requestBody) {
+    return await patch(postId, requestBody, this.jwtToken)
+  }
 }
 
 export default Author

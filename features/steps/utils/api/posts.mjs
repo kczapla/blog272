@@ -13,13 +13,10 @@ const update = async (putBody, postId, jwtToken) => {
   })
 }
 
-const index = async (query) => {
-  let indexUrl = url.posts()
-  if (query !== "") {
-    indexUrl += "?" + query
-  }
-
-  return await axios.get(indexUrl)
+const patch = async (patchBody, postId, jwtToken) => {
+  return await axios.patch(url.post(postId), patchBody, {
+    auth: `Bearer ${jwtToken}`,
+  })
 }
 
-export default { create, update, index }
+export default { create, patch, update }

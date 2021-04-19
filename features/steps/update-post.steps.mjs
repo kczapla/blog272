@@ -4,6 +4,7 @@ import { makeBob, makeMark } from "./utils/authors"
 import {
   defaultPost,
   aBitDifferentDefaultPost,
+  defaultPostProperty,
 } from "./utils/post-request-body-templates"
 
 const feature = loadFeature("./features/update-post.feature")
@@ -42,6 +43,39 @@ defineFeature(feature, (test) => {
       )
       expect(updatePostResponse.body).toMatchPostResponseBody()
       expect(updatePostResponse.body.title).toMatchObject(updatePostRequestBody)
+    })
+  })
+
+  test("Update post's single field", ({ given, and, when, then }) => {
+    const bob = makeBob()
+    given("Bob is logged in", async () => {
+      await bob.login()
+    })
+
+    let publishedPostId
+    and("he published a post", () => {
+      const publishedPostBody = bob.writePost(defaaultPost)
+      const publishedPostResponse = bob.publishPost(publishedPostId)
+      publishedPostId = publishedPostResponse.body.id
+    })
+
+    let patchRequestBody
+    and(/^he wants to update its (.*)$/, (property) => {
+      patchRequestBody = defaultPostProperty(property)
+    })
+
+    let patchResponse
+    when("he sends an updated title to the server", async () => {
+      await bob.updatePostProperty(patchRequestBody)
+    })
+
+    then("the server should handle it and return success status", () => {
+      expect(patchResponse.status).toEqual(200)
+      expect(updatePostResponse.header["content-location"]).toEqual(
+        /\/posts\/\d+/
+      )
+      expect(patchResponse.body).toMatchPostResponseBody()
+      expect(patchResponse.body).toMatchObject(patchRequestBody)
     })
   })
 

@@ -1,6 +1,6 @@
 Feature: Update post
 
-    Post's author can update its content all at once
+    Post's author can update its content all at once or just single field
 
 Scenario: Update post
 Given Bob is logged in
@@ -8,6 +8,20 @@ And he created post sometime ago
 And he wants to update it
 When he sends an updated content to the server
 Then the server should handle it and return success status
+
+Scenario Outline: Update post's single field
+Given Bob is logged in
+And he published a post
+And he wants to update its <PropertyName>
+When he sends an updated title to the server 
+Then the server should handle it and return success status
+
+Examples:
+    | PropertyName |
+    | title        |
+    | categories   |
+    | tags         |
+    | content      |
 
 Scenario Outline: Do not update post if required property is missing
 Given Bob is logged in
