@@ -11,8 +11,6 @@ import makeApiRouter from "../api/"
 
 import request from "supertest"
 
-import { makePostRequestBody } from "./utils"
-
 describe("posts functional tests", () => {
   let app, server
 
@@ -50,31 +48,6 @@ describe("Given /posts end-point", () => {
           expect(response.status).toEqual(200)
           expect(response.header["content-type"]).toMatch(/json/)
           expect(response.body).toBeNull()
-        })
-      })
-    })
-  })
-  describe("Given url /posts/X", () => {
-    describe("And property title in the request body", () => {
-      describe("When sending PATCH request", () => {
-        it("Then recieve updated post in the response body", async () => {
-          const expectedPostBody = makePostRequestBody()
-          const postResponse = await request(server)
-            .post("/posts")
-            .send(expectedPostBody)
-          expect(postResponse.status).toEqual(200)
-
-          expectedPostBody.title = "New title"
-          const patchResponse = await request(server)
-            .patch(`/posts/${postResponse.body.id}`)
-            .send(expectedPostBody)
-
-          expect(patchResponse.status).toEqual(200)
-          expect(patchResponse.header["content-location"]).toEqual(
-            /\/posts\/\d+/
-          )
-          expect(patchResponse.body).toMatchPostResponseBody()
-          expect(patchResponse.body).toMatchObject(expectedPostBody)
         })
       })
     })
