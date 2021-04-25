@@ -31,3 +31,23 @@ Feature: Quering posts
     But nobody published such posts
     When he sends query to the server
     Then the server should return an empty list
+
+    Scenario: No posts published within given timeframe
+    Given no posts were have been published from "2020-01-01" to "2020-01-31"
+    When Bob searches
+    Then the server should return an empty list
+
+    Scenario: No posts with given categories were published
+    Given no posts with "Scam" category were published on the blog
+    When Bob searches
+    Then the server should return an empty list
+
+    Scenario: No posts with given tag were published
+    Given no posts with "Police" tag were published on the blog
+    When Bob searches
+    Then the server should return an empty list
+
+    Scenario: No posts were published by given author
+    Given no posts published by "John" were published on the blog
+    When Bob searches
+    Then the server should return an empty list

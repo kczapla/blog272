@@ -1,6 +1,10 @@
 import axios from "axios"
 import url from "../url"
 
+const index = async (urlWithQuery) => {
+  return await axios.get(urlWithQuery)
+}
+
 const create = async (postBody, jwtToken) => {
   return await axios.post(url.posts(), postBody, {
     auth: `Bearer ${jwtToken}`,
@@ -19,4 +23,4 @@ const patch = async (patchBody, postId, jwtToken) => {
   })
 }
 
-export default { create, patch, update }
+export default { create, patch, update, index }

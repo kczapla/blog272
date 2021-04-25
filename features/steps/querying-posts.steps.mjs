@@ -1,6 +1,7 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
 import axios from "axios"
 import { ConvenientPostsQueryBuilder } from "./utils/posts-query-builder"
+import posts from "./utils/api/posts"
 
 const feature = loadFeature("./features/querying-posts.feature")
 const url = "http://127.0.0.1:3000/api/v0/posts"
@@ -107,7 +108,6 @@ defineFeature(feature, (test) => {
         const queryBuilder = new ConvenientPostsQueryBuilder()
         queryBuilder.addTitles("Test")
         pattern = queryBuilder.build()
-        console.log(`pattern = ${pattern}`)
       }
     )
 
@@ -120,6 +120,93 @@ defineFeature(feature, (test) => {
 
     then("the server should return an empty list", () => {
       expect(response).toEqual(200)
+      expect(response.body).toBeNull()
+    })
+  })
+
+  test("No posts published within given timeframe", ({ given, when, then }) => {
+    let query
+    given(
+      /^no posts were have been published from (.*) to (.*)$/,
+      (from, to) => {
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addPublishedFromDates(from)
+        queryBuilder.addPublishedToDates(to)
+        query = queryBuilder.build()
+      }
+    )
+
+    let response
+    when("Bob searches", async () => {
+      response = await posts.index(query)
+    })
+
+    then("the server should return an empty list", () => {
+      expect(response.status).toEqual(200)
+      expect(response.body).toBeNull()
+    })
+  })
+  test("No posts with given categories were published", ({
+    given,
+    when,
+    then,
+  }) => {
+    let query
+    given(
+      /^no posts with (.*) category were published on the blog$/,
+      (category) => {
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addCategories(category)
+        query = queryBuilder.build()
+      }
+    )
+
+    let response
+    when("Bob searches", async () => {
+      response = await posts.index(query)
+    })
+
+    then("the server should return an empty list", () => {
+      expect(response.status).toEqual(200)
+      expect(response.body).toBeNull()
+    })
+  })
+  test("No posts with given tag were published", ({ given, when, then }) => {
+    let query
+    given(/^no posts with (.*) tag were published on the blog$/, (tag) => {
+      const queryBuilder = new ConvenientPostsQueryBuilder()
+      queryBuilder.addTags(tag)
+      query = queryBuilder.build()
+    })
+
+    let response
+    when("Bob searches", async () => {
+      response = await posts.index(query)
+    })
+
+    then("the server should return an empty list", () => {
+      expect(response.status).toEqual(200)
+      expect(response.body).toBeNull()
+    })
+  })
+  test("No posts were published by given author", ({ given, when, then }) => {
+    let query
+    given(
+      /^no posts published by (.*) were published on the blog$/,
+      (author) => {
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addAuthors(author)
+        query = queryBuilder.build()
+      }
+    )
+
+    let response
+    when("Bob searches", async () => {
+      response = await posts.index(query)
+    })
+
+    then("the server should return an empty list", () => {
+      expect(response.status).toEqual(200)
       expect(response.body).toBeNull()
     })
   })

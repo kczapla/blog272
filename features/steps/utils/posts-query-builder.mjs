@@ -21,6 +21,14 @@ class PostsQueryBuilder {
     this.query.push(`tags=${tag}`)
   }
 
+  addPublishedFrom(fromDate) {
+    this.query.push(`published_from=${fromDate}`)
+  }
+
+  addPublishedTo(toDate) {
+    this.query.push(`published_to=${toDate}`)
+  }
+
   build() {
     return url.posts() + "&" + this.query.join("&")
   }
@@ -49,6 +57,18 @@ export class ConvenientPostsQueryBuilder {
 
   addTags(tags) {
     tags.split(",").forEach((tag) => this.postQueryBuilder.addTag(tag))
+  }
+
+  addPublishedFromDates(fromDates) {
+    fromDates
+      .split(",")
+      .forEach((fromDate) => this.postQueryBuilder.addPublishedFrom(fromDate))
+  }
+
+  addPublishedToDates(toDates) {
+    toDates
+      .split(",")
+      .forEach((toDate) => this.postQueryBuilder.addPublishedTo(toDate))
   }
 
   build() {
