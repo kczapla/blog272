@@ -1,5 +1,6 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
 import axios from "axios"
+import { ConvenientPostsQueryBuilder } from "./utils/posts-query-builder"
 
 const feature = loadFeature("./features/querying-posts.feature")
 const url = "http://127.0.0.1:3000/api/v0/posts"
@@ -95,6 +96,31 @@ defineFeature(feature, (test) => {
         new Date("2021-01-01"),
         new Date("2021-02-01")
       )
+    })
+  })
+
+  test("Query doesn't match any post", ({ given, but, when, then }) => {
+    let pattern
+    given(
+      "user is searching for posts with Cooking within thier titles",
+      () => {
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addTitles("Test")
+        pattern = queryBuilder.build()
+        console.log(`pattern = ${pattern}`)
+      }
+    )
+
+    but("nobody published such posts", () => {})
+
+    let response
+    when("he sends query to the server", async () => {
+      response = await axios.get(pattern)
+    })
+
+    then("the server should return an empty list", () => {
+      expect(response).toEqual(200)
+      expect(response.body).toBeNull()
     })
   })
 })

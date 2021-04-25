@@ -25,3 +25,9 @@ Feature: Quering posts
     Scenario: List all posts published in time range
     When users want to get all posts published in January 2021
     Then the server should return posts published in that range
+
+    Scenario: Query doesn't match any post
+    Given user is searching for posts with Cooking within thier titles
+    But nobody published such posts
+    When he sends query to the server
+    Then the server should return an empty list

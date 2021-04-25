@@ -1,3 +1,5 @@
+import url from "./url"
+
 class PostsQueryBuilder {
   constructor() {
     this.query = []
@@ -20,7 +22,7 @@ class PostsQueryBuilder {
   }
 
   build() {
-    return this.url + this.query.join("&")
+    return url.posts() + "&" + this.query.join("&")
   }
 }
 
