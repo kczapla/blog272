@@ -1,15 +1,6 @@
 Feature: Quering posts
 
-
     blog272 can filter posts
-
-    # Background: Setup data
-    # Given there are 50 posts on the blog
-    # And 10 are posted by John
-    # And 5 has "Building" in their title
-    # And 10 has one or more categories from [home, plants]
-    # And 5 has one or more tag from [cmake, markdown]
-    # And 20 were posts in January 2021
 
     Scenario: List all posts on the blog
     When users want to get all posts
