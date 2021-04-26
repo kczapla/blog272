@@ -1,8 +1,12 @@
 import axios from "axios"
+import qs from "qs"
 import url from "../url"
 
-const index = async (urlWithQuery) => {
-  return await axios.get(urlWithQuery)
+const index = async (parameters) => {
+  return await axios.get(url.posts(), {
+    params: parameters,
+    paramsSerializer: (params) => qs.stringify(params),
+  })
 }
 
 const create = async (postBody, jwtToken) => {

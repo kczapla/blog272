@@ -1,16 +1,14 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
-import axios from "axios"
 import { ConvenientPostsQueryBuilder } from "./utils/posts-query-builder"
 import posts from "./utils/api/posts"
 
 const feature = loadFeature("./features/querying-posts.feature")
-const url = "http://127.0.0.1:3000/api/v0/posts"
 
 defineFeature(feature, (test) => {
   test("List all posts on the blog", ({ when, then }) => {
     let response
     when("users want to get all posts", async () => {
-      response = await axios.get(url)
+      response = await posts.index({})
     })
     then("the server should return posts", () => {
       expect(response.status).toEqual(200)
@@ -21,7 +19,9 @@ defineFeature(feature, (test) => {
   test("List all posts published by John", ({ when, then }) => {
     let response
     when("users want to get all posts published by John", async () => {
-      response = await axios.get(url + "?author=John")
+      const queryBuilder = new ConvenientPostsQueryBuilder()
+      queryBuilder.addAuthors("John")
+      response = await posts.index(queryBuilder.build())
     })
     then("the server should return posts published by John", () => {
       expect(response.status).toEqual(200)
@@ -34,7 +34,9 @@ defineFeature(feature, (test) => {
     when(
       "users want get all posts with 'Building' in their title",
       async () => {
-        response = await axios.get(url + "?title=Building")
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addTitles("Building")
+        response = await posts.index(queryBuilder.build())
       }
     )
     then(
@@ -52,7 +54,9 @@ defineFeature(feature, (test) => {
     when(
       "users want to get all posts with one or more category from [home, plants]",
       async () => {
-        response = await axios.get(url + "?category=home&category=plants")
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addCategories("home,plants")
+        response = await posts.index(queryBuilder.build())
       }
     )
 
@@ -68,12 +72,14 @@ defineFeature(feature, (test) => {
   test("List all posts that have one or more tag", ({ when, then }) => {
     let response
     when("user wants to get posts tagged as [cmake, markdown]", async () => {
-      response = await axios.get(url + "?tags=cmake&tags=markdown")
+      const queryBuilder = new ConvenientPostsQueryBuilder()
+      queryBuilder.addTags("cmake,markdown")
+      response = await posts.index(queryBuilder.build())
     })
 
     then("the server should return only posts with these tags", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).arrayToHaveOneOfTheTagInEachPost([
+      expect(response.data).arrayToHaveOneOfTheTagInEachPost([
         "cmake",
         "markdown",
       ])
@@ -85,42 +91,43 @@ defineFeature(feature, (test) => {
     when(
       /^users want to get all posts published in January (.*)$/,
       async (year) => {
-        response = await axios.get(
-          url + `?published_after=${year}-01-01&published_before=${year}-02-01`
-        )
+        const queryBuilder = new ConvenientPostsQueryBuilder()
+        queryBuilder.addPublishedFromDates(`${year}-01-01`)
+        queryBuilder.addPublishedToDates(`${year}-02-01`)
+        const pattern = queryBuilder.build()
+        response = await posts.index(pattern)
       }
     )
 
     then("the server should return posts published in that range", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).postsArrayIsPublishedWithinRange(
+      expect(response.data).postsArrayIsPublishedWithinRange(
         new Date("2021-01-01"),
         new Date("2021-02-01")
       )
     })
   })
 
-  test("Query doesn't match any post", ({ given, but, when, then }) => {
-    let pattern
-    given(
-      "user is searching for posts with Cooking within thier titles",
-      () => {
-        const queryBuilder = new ConvenientPostsQueryBuilder()
-        queryBuilder.addTitles("Test")
-        pattern = queryBuilder.build()
-      }
-    )
-
-    but("nobody published such posts", () => {})
+  test("No posts posts with given title were published", ({
+    given,
+    when,
+    then,
+  }) => {
+    let query
+    given(/^no posts with (.*) in the title were published$/, (title) => {
+      const queryBuilder = new ConvenientPostsQueryBuilder()
+      queryBuilder.addTitles(`${title}`)
+      query = queryBuilder.build()
+    })
 
     let response
-    when("he sends query to the server", async () => {
-      response = await axios.get(pattern)
+    when("Bob searches", async () => {
+      response = await posts.index(query)
     })
 
     then("the server should return an empty list", () => {
-      expect(response).toEqual(200)
-      expect(response.body).toBeNull()
+      expect(response.status).toEqual(200)
+      expect(response.data).toBeNull()
     })
   })
 
@@ -143,7 +150,7 @@ defineFeature(feature, (test) => {
 
     then("the server should return an empty list", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).toBeNull()
+      expect(response.data).toBeNull()
     })
   })
   test("No posts with given categories were published", ({
@@ -168,7 +175,7 @@ defineFeature(feature, (test) => {
 
     then("the server should return an empty list", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).toBeNull()
+      expect(response.data).toBeNull()
     })
   })
   test("No posts with given tag were published", ({ given, when, then }) => {
@@ -186,7 +193,7 @@ defineFeature(feature, (test) => {
 
     then("the server should return an empty list", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).toBeNull()
+      expect(response.data).toBeNull()
     })
   })
   test("No posts were published by given author", ({ given, when, then }) => {
@@ -207,7 +214,7 @@ defineFeature(feature, (test) => {
 
     then("the server should return an empty list", () => {
       expect(response.status).toEqual(200)
-      expect(response.body).toBeNull()
+      expect(response.data).toBeNull()
     })
   })
 })

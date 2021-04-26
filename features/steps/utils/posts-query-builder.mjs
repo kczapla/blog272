@@ -1,36 +1,42 @@
-import url from "./url"
-
 class PostsQueryBuilder {
   constructor() {
-    this.query = []
+    this.query = {}
   }
 
   addAuthor(author) {
-    this.query.push(`author=${author}`)
+    this.query["author"] = author
   }
 
   addTitle(title) {
-    this.query.push(`title=${title}`)
+    this.query["title"] = title
   }
 
   addCategory(category) {
-    this.query.push(`categories=${category}`)
+    if (!("categoires" in this.query)) {
+      this.query["categories"] = []
+    }
+    this.query["categories"].push(category)
   }
 
   addTag(tag) {
-    this.query.push(`tags=${tag}`)
+    if (!("tags" in this.query)) {
+      this.query["tags"] = []
+    }
+    this.query["tags"].push(tag)
   }
 
   addPublishedFrom(fromDate) {
-    this.query.push(`published_from=${fromDate}`)
+    this.query["published_from"] = fromDate
   }
 
   addPublishedTo(toDate) {
-    this.query.push(`published_to=${toDate}`)
+    this.query["published_to"] = toDate
   }
 
   build() {
-    return url.posts() + "&" + this.query.join("&")
+    const query = this.query
+    this.query = {}
+    return query
   }
 }
 
