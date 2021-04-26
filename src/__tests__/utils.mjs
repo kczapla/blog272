@@ -13,16 +13,3 @@ export const makeObjectFieldMatcher = (obj) => {
     return new Field()
   }
 }
-
-export const makePostRequestBody = () => {
-  return {
-    author: {
-      id: 1,
-      name: "john",
-    },
-    title: "Test title",
-    categories: ["cat1", "cat2"],
-    tags: ["tag1", "tag2"],
-    content: "Test content",
-  }
-}
