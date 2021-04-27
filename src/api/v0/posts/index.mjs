@@ -1,2 +1,14 @@
-export { default as makePostRouter } from "./router.mjs"
-export { default as PostController } from "./controller.mjs"
+import Router from "koa-router"
+
+class PostsRouter {
+  constructor(postsController) {
+    this.postsController = postsController
+    this.router = new Router({
+      prefix: "/posts",
+    })
+  }
+
+  getRoutes() {
+    this.router.get("/", this.postsController.index)
+  }
+}

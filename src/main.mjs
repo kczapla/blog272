@@ -1,7 +1,8 @@
 import Router from "koa-router"
+import api from "./api"
 import { WebApp } from "./web/app"
 
-const router = {
+const postsRouter = {
   getRoutes: () => {
     const router = new Router({
       prefix: "/posts",
@@ -19,5 +20,11 @@ const router = {
   },
 }
 
-const webApp = new WebApp({ port: 3000 }, router)
+const versionZeroRouter = new api.RouterComposite("/v0")
+versionZeroRouter.addRouter(postsRouter)
+
+const apiRouter = new api.RouterComposite("/api")
+apiRouter.addRouter(versionZeroRouter)
+
+const webApp = new WebApp({ port: 3000 }, apiRouter)
 webApp.start()
