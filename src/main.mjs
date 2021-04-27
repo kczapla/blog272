@@ -1,27 +1,22 @@
-import Router from "koa-router"
 import api from "./api"
 import { WebApp } from "./web/app"
 
-const postsRouter = {
-  getRoutes: () => {
-    const router = new Router({
-      prefix: "/posts",
-    })
+const docsController = {
+  raw: async (ctx, next) => {
+    ctx.body = { docs: "this is raw doc" }
+    await next()
+  },
 
-    router.get("/", async (ctx, next) => {
-      ctx.body = [
-        { id: 1, name: "krzysztof", surname: "czapla" },
-        { id: 2, name: "krzysztof", surname: "czapla" },
-      ]
-      await next()
-    })
-
-    return router.routes()
+  ui: async (ctx, next) => {
+    ctx.body = { docs: "this is pretty doc" }
+    await next()
   },
 }
 
+const docsRouter = new api.DocsRouter(docsController)
+
 const versionZeroRouter = new api.RouterComposite("/v0")
-versionZeroRouter.addRouter(postsRouter)
+versionZeroRouter.addRouter(docsRouter)
 
 const apiRouter = new api.RouterComposite("/api")
 apiRouter.addRouter(versionZeroRouter)
