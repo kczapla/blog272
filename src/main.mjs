@@ -1,10 +1,23 @@
-import Koa from "koa"
-import makeApiRouter from "./api"
+import Router from "koa-router"
 import { WebApp } from "./web/app"
 
-const app = new Koa()
+const router = {
+  getRoutes: () => {
+    const router = new Router({
+      prefix: "/posts",
+    })
 
-app.use(makeApiRouter().routes())
+    router.get("/", async (ctx, next) => {
+      ctx.body = [
+        { id: 1, name: "krzysztof", surname: "czapla" },
+        { id: 2, name: "krzysztof", surname: "czapla" },
+      ]
+      await next()
+    })
 
-const webApp = new WebApp(app, 3000)
+    return router.routes()
+  },
+}
+
+const webApp = new WebApp({ port: 3000 }, router)
 webApp.start()
