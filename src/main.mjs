@@ -1,25 +1,21 @@
 import api from "./api"
 import { WebApp } from "./web/app"
+import { DocsController } from "./controllers"
 
-const docsController = {
-  raw: async (ctx, next) => {
-    ctx.body = { docs: "this is raw doc" }
-    await next()
-  },
-
-  ui: async (ctx, next) => {
-    ctx.body = { docs: "this is pretty doc" }
-    await next()
+const docs = {
+  getDocument: () => {
+    return { docs: "this is raw doc" }
   },
 }
 
+const url = "http://localhost:3000/api/v0/docs"
+const docsController = new DocsController(docs, url)
 const docsRouter = new api.DocsRouter(docsController)
 
 const versionZeroRouter = new api.RouterComposite("/v0")
 versionZeroRouter.addRouter(docsRouter)
-
 const apiRouter = new api.RouterComposite("/api")
-apiRouter.addRouter(versionZeroRouter)
 
+apiRouter.addRouter(versionZeroRouter)
 const webApp = new WebApp({ port: 3000 }, apiRouter)
 webApp.start()
