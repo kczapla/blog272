@@ -1,12 +1,15 @@
 import api from "./api"
 import { WebApp } from "./web/app"
 import { DocsController } from "./controllers"
+import { OpenApiDoc } from "./domain"
 
-const docs = {
+const docsService = {
   getDocument: () => {
     return { docs: "this is raw doc" }
   },
 }
+
+const docs = new OpenApiDoc(docsService)
 
 const url = "http://localhost:3000/api/v0/docs"
 const docsController = new DocsController(docs, url)
