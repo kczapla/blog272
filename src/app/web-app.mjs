@@ -1,6 +1,6 @@
 import Koa from "koa"
 
-export class WebApp {
+class WebApp {
   constructor(configuration, router) {
     this.configuration = configuration
 
@@ -16,3 +16,5 @@ export class WebApp {
     this.server.close()
   }
 }
+
+export default WebApp

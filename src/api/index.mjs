@@ -1,4 +1,2 @@
-import RouterComposite from "./router-composite"
-import DocsRouter from "./docs-router"
-
-export default { RouterComposite, DocsRouter }
+export { default as DocsRouter } from "./docs-router.mjs"
+export { default as RouterComposite } from "./router-composite"

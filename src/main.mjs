@@ -1,7 +1,7 @@
 import path from "path"
 
-import api from "./api"
-import { WebApp } from "./web/app"
+import { DocsRouter, RouterComposite } from "./api"
+import { WebApp } from "./app"
 import { DocsController } from "./controllers"
 import { OpenApiDoc } from "./domain"
 import { OpenApiYamlFile } from "./service"
@@ -12,11 +12,11 @@ const docs = new OpenApiDoc(docsService)
 
 const docsController = new DocsController(docs)
 const url = "http://localhost:3000/api/v0/docs"
-const docsRouter = new api.DocsRouter(docsController, url)
+const docsRouter = new DocsRouter(docsController, url)
 
-const versionZeroRouter = new api.RouterComposite("/v0")
+const versionZeroRouter = new RouterComposite("/v0")
 versionZeroRouter.addRouter(docsRouter)
-const apiRouter = new api.RouterComposite("/api")
+const apiRouter = new RouterComposite("/api")
 
 apiRouter.addRouter(versionZeroRouter)
 const webApp = new WebApp({ port: 3000 }, apiRouter)
