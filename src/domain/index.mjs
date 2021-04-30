@@ -1,1 +1,1 @@
-export { default as OpenApiDocs } from "./open-api-doc.mjs"
+export { default as OpenApiDoc } from "./open-api-doc"
