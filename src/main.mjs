@@ -1,6 +1,6 @@
 import path from "path"
 
-import { DocsRouter, RouterComposite } from "./api"
+import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController } from "./controllers"
 import { OpenApiDoc } from "./domain"
@@ -14,8 +14,17 @@ const docsController = new DocsController(docs)
 const url = "http://localhost:3000/api/v0/docs"
 const docsRouter = new DocsRouter(docsController, url)
 
+const postsController = {
+  read: async (ctx, next) => {
+    ctx.body = { id: 1, author: "Bogdan", content: "Ebebe" }
+    await next()
+  },
+}
+const postsRouter = new PostsRouter(postsController)
+
 const versionZeroRouter = new RouterComposite("/v0")
 versionZeroRouter.addRouter(docsRouter)
+versionZeroRouter.addRouter(postsRouter)
 const apiRouter = new RouterComposite("/api")
 
 apiRouter.addRouter(versionZeroRouter)
