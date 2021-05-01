@@ -83,7 +83,7 @@ paths:
         - in: query
           name: published_before
           description: Exclusive end date of published date range. There can be only one published_before's query in query string.
-          required: fals
+          required: false
           schema:
             type: string
             format: date-time
