@@ -4,7 +4,7 @@ class PostsController {
   }
 
   async read(ctx, next) {
-    const id = ctx.request.query.id
+    const id = Number(ctx.request.params.id)
 
     if (!Number.isInteger(id)) {
       ctx.body = {
