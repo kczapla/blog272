@@ -3,8 +3,8 @@ class Posts {
     this.postsService = postsService
   }
 
-  get(id) {
-    const post = this.postsService.get(id)
+  async get(id) {
+    const post = await this.postsService.get(id)
 
     if (Object.keys(post).length === 0) {
       throw `No post with id = ${id}`

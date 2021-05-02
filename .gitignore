@@ -12,4 +12,5 @@
 !jest.config.json
 !babel.config.json
 !Dockerfile
+!docker-compose.yaml
 !.dockerignore

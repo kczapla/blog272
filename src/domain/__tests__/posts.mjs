@@ -1,25 +1,30 @@
 import Posts from "../posts"
 
 describe("Posts", () => {
-  it("thorws an error", () => {
+  it("throws an error", async () => {
     const postsService = {
-      get: () => {
+      get: async () => {
         return {}
       },
     }
     const posts = new Posts(postsService)
 
-    expect(() => posts.get(1)).toThrow()
+    try {
+      await posts.get(1)
+    } catch (error) {
+      expect(error).toMatch("No post with id = 1")
+    }
   })
 
-  it("returns post", () => {
+  it("returns post", async () => {
     const postsService = {
-      get: () => {
+      get: async () => {
         return { title: "carcetti" }
       },
     }
     const posts = new Posts(postsService)
+    const post = await posts.get(1)
 
-    expect(posts.get(1)).toMatchObject({ title: "carcetti" })
+    expect(post).toMatchObject({ title: "carcetti" })
   })
 })

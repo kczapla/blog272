@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+    web:
+        build:
+            context: .
+            target: prod
+        depends_on: 
+            - mongo
+        container_name: blog272
+        ports: 
+            - "5000:5000"
+        restart: always
+    db:
+        image: "mongo:4.4.5-bionic"
+        container_name: mongo-db
+        ports: 
+            - "27017:27017"
+        restart: always

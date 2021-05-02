@@ -4,19 +4,10 @@ class PostsController {
   }
 
   async read(ctx, next) {
-    const id = Number(ctx.request.params.id)
-
-    if (!Number.isInteger(id)) {
-      ctx.body = {
-        code: 1,
-        message: "Given post id is not an integer.",
-      }
-      ctx.response.status = 400
-      return
-    }
+    const id = ctx.request.params.id
 
     try {
-      ctx.body = this.posts.get(id)
+      ctx.body = await this.posts.get(id)
       ctx.response.status = 200
     } catch (error) {
       ctx.body = error
