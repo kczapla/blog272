@@ -3,6 +3,7 @@ import path from "path"
 import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
+import { mongoDbConfig } from "./config"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
@@ -21,11 +22,10 @@ async function main() {
   const url = "http://localhost:5000/api/v0/docs"
   const docsRouter = new DocsRouter(docsController, url)
 
-  const uri = "mongodb://db:27017/?maxPoolSize=20"
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  const client = new MongoClient(
+    mongoDbConfig.getUri(),
+    mongoDbConfig.getConnectionOptions()
+  )
 
   await client.connect()
   await client.db("admin").command({ ping: 1 })

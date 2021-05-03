@@ -7,7 +7,11 @@ services:
         depends_on: 
             - mongo
         container_name: blog272
-        ports: 
+        env_file: .env
+        environment:
+            - MONGO_HOSTNAME=db
+            - MONGO_PORT=$MONGO_PORT
+        ports:
             - "5000:5000"
         restart: always
     db:
