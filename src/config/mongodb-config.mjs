@@ -1,4 +1,8 @@
-const { MONGO_HOSTNAME, MONGO_PORT } = process.env
+const { MONGO_HOSTNAME, MONGO_PORT, MONGO_DB } = process.env
+
+const getMongoDbName = () => {
+  return MONGO_DB
+}
 
 const getUri = () => {
   return `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}`
@@ -11,4 +15,4 @@ const getConnectionOptions = () => {
   }
 }
 
-export default { getUri, getConnectionOptions }
+export default { getUri, getMongoDbName, getConnectionOptions }

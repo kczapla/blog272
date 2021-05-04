@@ -29,7 +29,9 @@ async function main() {
 
   await client.connect()
   await client.db("admin").command({ ping: 1 })
-  const db = client.db("blog")
+  console.log("Connected to MongoDB")
+
+  const db = client.db(mongoDbConfig.getMongoDbName())
 
   const postsService = new MongoPostsService(db.collection("posts"))
 

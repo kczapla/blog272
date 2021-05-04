@@ -11,6 +11,7 @@ services:
         environment:
             - MONGO_HOSTNAME=db
             - MONGO_PORT=$MONGO_PORT
+            - MONGO_DB=$MONGO_DB
         ports:
             - "5000:5000"
         restart: always
