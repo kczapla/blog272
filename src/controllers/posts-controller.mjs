@@ -15,6 +15,8 @@ class PostsController {
     }
     await next()
   }
+
+  async create() {}
 }
 
 export default PostsController

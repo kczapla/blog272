@@ -10,6 +10,9 @@ class PostsRouter {
     router.get("/posts/:id", (ctx, next) =>
       this.postsController.read(ctx, next)
     )
+    router.post("/posts", (ctx, next) => {
+      this.postsController.create(ctx, next)
+    })
 
     return router.routes()
   }
