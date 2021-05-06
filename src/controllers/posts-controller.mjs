@@ -1,6 +1,9 @@
+import { createErrorResponseBody } from "./error-response-body"
+
 class PostsController {
-  constructor(posts) {
+  constructor(posts, createPost) {
     this.posts = posts
+    this.createPost = createPost
   }
 
   async read(ctx, next) {
@@ -16,7 +19,19 @@ class PostsController {
     await next()
   }
 
-  async create() {}
+  async create(ctx, next) {
+    const postRequestBody = ctx.request.body
+
+    try {
+      const post = await this.createPost.create(postRequestBody)
+      ctx.response.body = post
+      ctx.response.status = 201
+    } catch (error) {
+      ctx.body = createErrorResponseBody(1, error)
+      ctx.response.status = 400
+    }
+    await next()
+  }
 }
 
 export default PostsController
