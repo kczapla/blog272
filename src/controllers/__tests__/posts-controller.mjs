@@ -1,7 +1,7 @@
 import PostsController from "../posts-controller"
 
 describe("PostsController", () => {
-  it("returns 404", async () => {
+  it("read returns 404", async () => {
     const posts = {
       get: async () => {
         throw "post does not exist"
@@ -22,7 +22,7 @@ describe("PostsController", () => {
     await postsController.read(context, async () => {})
     expect(context.response.status).toEqual(404)
   })
-  it("returns 200", async () => {
+  it("read returns 200", async () => {
     const posts = {
       get: async () => {
         return {}
