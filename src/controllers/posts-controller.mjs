@@ -5,6 +5,8 @@ import {
   authorSchema,
 } from "./posts-request-body-schema"
 
+import { CreatePostRequestBody } from "../domain"
+
 class PostsController {
   constructor(posts, createPost) {
     this.posts = posts
@@ -43,12 +45,14 @@ class PostsController {
       return
     }
 
+    const createPostRequestBody = new CreatePostRequestBody(postRequestBody)
+
     try {
-      const post = await this.createPost.create(postRequestBody)
+      const post = await this.createPost.create(createPostRequestBody)
       ctx.response.body = post
       ctx.response.status = 201
     } catch (error) {
-      ctx.body = createErrorResponseBody(1, error)
+      ctx.response.body = createErrorResponseBody(1, error)
       ctx.response.status = 400
     }
     await next()

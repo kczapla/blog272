@@ -16,6 +16,18 @@ class MongoPostsService {
     }
     return post
   }
+
+  async create(data) {
+    try {
+      const post = await this.postsCollection.insertOne(data)
+      let insertedPost = post.ops[0]
+      insertedPost.published_date = ObjectId(insertedPost._id).getTimestamp()
+      return insertedPost
+    } catch (error) {
+      console.log(error)
+      return {}
+    }
+  }
 }
 
 export default MongoPostsService
