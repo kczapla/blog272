@@ -392,6 +392,8 @@ components:
                     type: string
               title:
                 type: string
+                minLength: 3
+                maxLength: 200
               categories:
                 type: array
                 items:

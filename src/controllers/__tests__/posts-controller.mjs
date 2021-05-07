@@ -59,3 +59,22 @@ describe("PostsController", () => {
     expect(context.response.body).toMatchObject(createResponseBody())
   })
 })
+
+describe("PostController.create", () => {
+  test.each(["title", "author", "content"])(
+    "returns an error when required property in postRequestBody is missing",
+    async () => {
+      const postController = new PostsController({}, {})
+      const context = createContext()
+      delete context.request.body["title"]
+
+      await postController.create(context, async () => {})
+
+      expect(context.response.body).toMatchObject({
+        code: /\d+/,
+        message: /.*/,
+      })
+      expect(context.response.status).toEqual(400)
+    }
+  )
+})

@@ -7,7 +7,7 @@ export const createPostRequestBody = () => {
     },
     categories: ["cat1", "cat2"],
     tags: ["tag1", "tag2"],
-    content: "test content",
+    content: "test content test content test content test content test content",
   }
 }
 
@@ -22,7 +22,7 @@ export const createResponseBody = () => {
 export const createContext = () => {
   return {
     request: {
-      data: createPostRequestBody(),
+      body: createPostRequestBody(),
     },
     response: {
       body: {},

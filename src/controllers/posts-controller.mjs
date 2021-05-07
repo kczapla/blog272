@@ -1,4 +1,9 @@
+import { Validator } from "jsonschema"
 import { createErrorResponseBody } from "./error-response-body"
+import {
+  postRequestBodySchema,
+  authorSchema,
+} from "./posts-request-body-schema"
 
 class PostsController {
   constructor(posts, createPost) {
@@ -21,6 +26,22 @@ class PostsController {
 
   async create(ctx, next) {
     const postRequestBody = ctx.request.body
+
+    const validator = new Validator()
+    validator.addSchema(authorSchema)
+    const validationResult = validator.validate(
+      postRequestBody,
+      postRequestBodySchema
+    )
+
+    if (!validationResult.valid) {
+      ctx.response.body = createErrorResponseBody(
+        11,
+        validationResult.toString()
+      )
+      ctx.response.status = 400
+      return
+    }
 
     try {
       const post = await this.createPost.create(postRequestBody)
