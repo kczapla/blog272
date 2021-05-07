@@ -8,14 +8,14 @@ import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
 import { OpenApiDoc, Posts, CreatePost } from "./domain"
-import { OpenApiYamlFile, MongoPostsService } from "./service"
+import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
 async function main() {
   const openApiDocPath = path.join(
     path.dirname(""),
     "/docs/api/v0/openapi.yaml"
   )
-  const docsService = new OpenApiYamlFile(openApiDocPath)
+  const docsService = new OpenApiYamlFileRepository(openApiDocPath)
   const docs = new OpenApiDoc(docsService)
 
   const docsController = new DocsController(docs)
@@ -33,7 +33,7 @@ async function main() {
 
   const db = client.db(mongoDbConfig.getMongoDbName())
 
-  const postsService = new MongoPostsService(db.collection("posts"))
+  const postsService = new MongoPostsRepository(db.collection("posts"))
 
   const posts = new Posts(postsService)
   const createPosts = new CreatePost(postsService)

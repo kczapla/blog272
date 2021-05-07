@@ -1,7 +1,7 @@
 import fs from "fs"
 import yaml from "js-yaml"
 
-class OpenApiYamlFile {
+class OpenApiYamlFileRepository {
   constructor(openApiDocPath) {
     this.openApiDocPath = openApiDocPath
   }
@@ -18,4 +18,4 @@ class OpenApiYamlFile {
   }
 }
 
-export default OpenApiYamlFile
+export default OpenApiYamlFileRepository

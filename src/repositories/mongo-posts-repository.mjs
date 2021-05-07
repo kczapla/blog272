@@ -1,7 +1,7 @@
 import mongodb from "mongodb"
 const { ObjectId } = mongodb
 
-class MongoPostsService {
+class MongoPostsRepository {
   constructor(postsCollection) {
     this.postsCollection = postsCollection
   }
@@ -30,4 +30,4 @@ class MongoPostsService {
   }
 }
 
-export default MongoPostsService
+export default MongoPostsRepository
