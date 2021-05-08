@@ -5,7 +5,7 @@ services:
             context: .
             target: prod
         depends_on: 
-            - mongo
+            - db
         container_name: blog272
         env_file: .env
         environment:
@@ -22,3 +22,12 @@ services:
         ports: 
             - "27017:27017"
         restart: always
+    web-acc-tests:
+        build:
+            context: .
+            target: acc_tests
+        depends_on:
+            - web
+        environment:
+            - BLOG272_HOST=127.0.0.1
+            - BLOG272_PORT=5000
