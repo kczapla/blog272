@@ -7,3 +7,8 @@ export const createPost = async (postRequestBody) => {
 
   return { status: createPostResponse.status, data: createPostResponse.data }
 }
+
+export const readPost = async (postId) => {
+  const createPostResponse = await axios.get(getPostsUrl() + `/${postId}`)
+  return { status: createPostResponse.status, data: createPostResponse.data }
+}

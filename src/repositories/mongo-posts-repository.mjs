@@ -9,7 +9,7 @@ class MongoPostsRepository {
   async read(id) {
     try {
       let post = await this.postsCollection.findOne({ _id: new ObjectId(id) })
-      post.publish_date = ObjectId(post._id).getTimestamp()
+      post.publishing_date = ObjectId(post._id).getTimestamp()
       return post
     } catch (error) {
       console.log(error)

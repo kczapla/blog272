@@ -1,4 +1,6 @@
 const postResponseSchema = {
+  schemaId: "auto",
+  type: "object",
   properties: {
     id: {
       type: "string",

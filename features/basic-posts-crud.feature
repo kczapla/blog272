@@ -6,3 +6,9 @@ Feature: Basic posts CRUD
     Given Bob wrote a post
     When he sends it to the server
     Then server should add it to the blog
+
+    Scenario: Read published post
+    Given Bob wrote a post
+    And he published it to the blog
+    When Mark wants to read Bob's post
+    Then server should return it
