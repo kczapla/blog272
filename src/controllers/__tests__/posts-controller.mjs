@@ -26,7 +26,7 @@ describe("PostsController", () => {
   })
   it("read returns 200", async () => {
     const posts = {
-      get: async () => {
+      read: async () => {
         return {}
       },
     }
@@ -42,7 +42,7 @@ describe("PostsController", () => {
         status: 0,
       },
     }
-    await postsController.read(context, async () => {})
+    await postsController.read(context)
     expect(context.response.status).toEqual(200)
   })
   it("create returns post in context body", async () => {
