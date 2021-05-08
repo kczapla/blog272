@@ -441,7 +441,7 @@ components:
         id:
           type: integer
           example: 4
-        publish_date:
+        publishing_date:
           type: string
           format: date-time
         author:

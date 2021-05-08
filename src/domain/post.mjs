@@ -1,8 +1,16 @@
 class Post {
-  constructor({ id, title, publish_date, author, tags, categories, content }) {
+  constructor({
+    id,
+    title,
+    publishing_date,
+    author,
+    tags,
+    categories,
+    content,
+  }) {
     this.id = id
     this.title = title
-    this.publish_date = publish_date
+    this.publishing_date = publishing_date
     this.author = author
     this.tags = tags
     this.categories = categories

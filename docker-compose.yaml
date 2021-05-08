@@ -29,5 +29,5 @@ services:
         depends_on:
             - web
         environment:
-            - BLOG272_HOST=127.0.0.1
+            - BLOG272_HOST=web
             - BLOG272_PORT=5000
