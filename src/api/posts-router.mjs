@@ -7,11 +7,13 @@ class PostsRouter {
 
   getRoutes() {
     const router = new Router()
-    router.get("/posts/:id", (ctx, next) =>
-      this.postsController.read(ctx, next)
-    )
+    router.get("/posts/:id", async (ctx, next) => {
+      await this.postsController.read(ctx)
+      await next()
+    })
     router.post("/posts", async (ctx, next) => {
-      await this.postsController.create(ctx, next)
+      await this.postsController.create(ctx)
+      await next()
     })
 
     return router.routes()

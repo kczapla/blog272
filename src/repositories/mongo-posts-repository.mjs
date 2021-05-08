@@ -6,15 +6,15 @@ class MongoPostsRepository {
     this.postsCollection = postsCollection
   }
 
-  async get(id) {
-    let post
+  async read(id) {
     try {
-      post = await this.postsCollection.findOne({ _id: new ObjectId(id) })
+      let post = await this.postsCollection.findOne({ _id: new ObjectId(id) })
+      post.publish_date = ObjectId(post._id).getTimestamp()
+      return post
     } catch (error) {
-      post = {}
       console.log(error)
+      return {}
     }
-    return post
   }
 
   async create(data) {

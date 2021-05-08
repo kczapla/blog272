@@ -13,20 +13,19 @@ class PostsController {
     this.createPost = createPost
   }
 
-  async read(ctx, next) {
+  async read(ctx) {
     const id = ctx.request.params.id
 
     try {
-      ctx.body = await this.readPost.get(id)
+      ctx.body = await this.readPost.read(id)
       ctx.response.status = 200
     } catch (error) {
       ctx.body = error
       ctx.response.status = 404
     }
-    await next()
   }
 
-  async create(ctx, next) {
+  async create(ctx) {
     const postRequestBody = ctx.request.body
 
     const validator = new Validator()
@@ -55,7 +54,6 @@ class PostsController {
       ctx.response.body = createErrorResponseBody(1, error)
       ctx.response.status = 400
     }
-    await next()
   }
 }
 

@@ -1,1 +1,1 @@
-export {default as PostsService } from './posts-service'
+export { default as PostsService } from "./posts-service"
