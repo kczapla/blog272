@@ -118,6 +118,6 @@ describe("PostController delete", () => {
     const context = createContext()
     await postController.delete(context)
 
-    expect(context.response.status).toEqual(200)
+    expect(context.response.status).toEqual(204)
   })
 })
