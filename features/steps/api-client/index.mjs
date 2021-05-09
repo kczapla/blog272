@@ -9,8 +9,11 @@ export const createPost = async (postRequestBody) => {
 }
 
 export const readPost = async (postId) => {
-  const createPostResponse = await axios.get(getPostsUrl() + `/${postId}`)
-  return { status: createPostResponse.status, data: createPostResponse.data }
+  try {
+    return await axios.get(getPostsUrl() + `/${postId}`)
+  } catch (error) {
+    return { status: error.response.status, data: error.response.data }
+  }
 }
 
 export const deletePost = async (postId) => {

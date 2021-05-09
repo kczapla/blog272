@@ -21,7 +21,7 @@ class PostsController {
       ctx.body = await this.readPost.read(id)
       ctx.response.status = 200
     } catch (error) {
-      ctx.body = error
+      ctx.body = createErrorResponseBody(1, error)
       ctx.response.status = 404
     }
   }

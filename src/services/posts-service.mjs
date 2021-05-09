@@ -5,11 +5,12 @@ class PostsService {
 
   async read(id) {
     let post = await this.postsRepository.read(id)
-    post.id = post._id
 
     if (Object.keys(post).length === 0) {
       throw `No post with id = ${id}`
     }
+
+    post.id = post._id
 
     return post
   }
