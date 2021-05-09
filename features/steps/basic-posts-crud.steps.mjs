@@ -4,7 +4,7 @@ expect.extend(matchers)
 
 import { postResponseSchema } from "./response-schemas"
 import { makeDefaultCreatePostRequestBody } from "./request-bodies"
-import { createPost, readPost } from "./api-client"
+import { createPost, deletePost, readPost } from "./api-client"
 
 const feature = loadFeature("./features/basic-posts-crud.feature")
 
@@ -46,6 +46,23 @@ defineFeature(feature, (test) => {
     then("server should return it", () => {
       expect(marksReadRequestResponse.status).toEqual(200)
       expect(marksReadRequestResponse.data).toMatchSchema(postResponseSchema)
+    })
+  })
+  test("Delete published post", ({ given, when, then }) => {
+    let bobsPostId
+    given("Bob published a post to the blog", async () => {
+      const response = await createPost(makeDefaultCreatePostRequestBody())
+      expect(response.status).toEqual(201)
+      bobsPostId = response.data.id
+    })
+
+    let deleteResponse
+    when("he sends delete request to the server", async () => {
+      deleteResponse = await deletePost(bobsPostId)
+    })
+
+    then("server should delete it and return success status", () => {
+      expect(deleteResponse.status).toEqual(204)
     })
   })
 })

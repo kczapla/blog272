@@ -22,6 +22,9 @@ export const createResponseBody = () => {
 export const createContext = () => {
   return {
     request: {
+      params: {
+        id: "1",
+      },
       body: createPostRequestBody(),
     },
     response: {

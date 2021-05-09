@@ -7,7 +7,7 @@ import { appConfig, mongoDbConfig } from "./config"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
-import { OpenApiDoc, ReadPost, CreatePost } from "./domain"
+import { OpenApiDoc, ReadPost, CreatePost, DeletePost } from "./domain"
 import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
@@ -38,7 +38,8 @@ async function main() {
   const postsService = new PostsService(postsRepository)
   const posts = new ReadPost(postsService)
   const createPosts = new CreatePost(postsService)
-  const postsController = new PostsController(posts, createPosts)
+  const deletePost = new DeletePost(postsService)
+  const postsController = new PostsController(posts, createPosts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
   const versionZeroRouter = new RouterComposite("/v0")

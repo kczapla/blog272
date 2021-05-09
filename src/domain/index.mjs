@@ -1,3 +1,4 @@
+export { default as DeletePost } from "./delete-post"
 export { default as ReadPost } from "./read-post"
 export { default as Post } from "./post"
 export { default as CreatePost } from "./create-post"

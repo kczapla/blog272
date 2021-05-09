@@ -12,3 +12,8 @@ export const readPost = async (postId) => {
   const createPostResponse = await axios.get(getPostsUrl() + `/${postId}`)
   return { status: createPostResponse.status, data: createPostResponse.data }
 }
+
+export const deletePost = async (postId) => {
+  const deletePostResponse = await axios.delete(getPostsUrl() + `/${postId}`)
+  return { status: deletePostResponse.status, data: deletePostResponse.data }
+}

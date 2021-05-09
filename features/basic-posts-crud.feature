@@ -12,3 +12,8 @@ Feature: Basic posts CRUD
     And he published it to the blog
     When Mark wants to read Bob's post
     Then server should return it
+
+    Scenario: Delete published post
+    Given Bob published a post to the blog
+    When he sends delete request to the server
+    Then server should delete it and return success status

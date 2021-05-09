@@ -21,6 +21,10 @@ class PostsService {
 
     return post
   }
+
+  async delete(id) {
+    await this.postsRepository.delete(id)
+  }
 }
 
 export default PostsService

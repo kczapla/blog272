@@ -8,9 +8,10 @@ import {
 import { CreatePostRequestBody } from "../domain"
 
 class PostsController {
-  constructor(readPost, createPost) {
+  constructor(readPost, createPost, deletePost) {
     this.readPost = readPost
     this.createPost = createPost
+    this.deletePost = deletePost
   }
 
   async read(ctx) {
@@ -53,6 +54,27 @@ class PostsController {
     } catch (error) {
       ctx.response.body = createErrorResponseBody(1, error)
       ctx.response.status = 400
+    }
+  }
+
+  async delete(ctx) {
+    const id = ctx.request.params.id
+
+    if (typeof id !== "string") {
+      ctx.response.status = 400
+      ctx.response.body = createErrorResponseBody(
+        1,
+        "Wrong id type, expected string."
+      )
+      return
+    }
+
+    try {
+      await this.deletePost.delete(id)
+      ctx.response.status = 204
+    } catch (error) {
+      ctx.response.status = 404
+      ctx.response.body = createErrorResponseBody(1, error)
     }
   }
 }

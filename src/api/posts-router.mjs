@@ -15,6 +15,10 @@ class PostsRouter {
       await this.postsController.create(ctx)
       await next()
     })
+    router.delete("/posts/:id", async (ctx, next) => {
+      await this.postsController.delete(ctx)
+      await next()
+    })
 
     return router.routes()
   }
