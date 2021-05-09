@@ -8,4 +8,5 @@ Feature: Baisc posts CRUD validation
 
     Scenario: Delete non-existent post
     When Bob reads non-existent post
+
     Then server should inform that it did not find a resource

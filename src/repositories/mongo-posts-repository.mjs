@@ -15,6 +15,10 @@ class MongoPostsRepository {
       return {}
     }
 
+    if (post === null) {
+      return {}
+    }
+
     post.publishing_date = ObjectId(post._id).getTimestamp()
     post.id = post._id
     delete post._id

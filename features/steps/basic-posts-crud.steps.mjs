@@ -56,13 +56,14 @@ defineFeature(feature, (test) => {
       bobsPostId = response.data.id
     })
 
-    let deleteResponse
     when("he sends delete request to the server", async () => {
-      deleteResponse = await deletePost(bobsPostId)
+      const deleteResponse = await deletePost(bobsPostId)
+      expect(deleteResponse.status).toEqual(204)
     })
 
-    then("server should delete it and return success status", () => {
-      expect(deleteResponse.status).toEqual(204)
+    then("server should delete it and return success status", async () => {
+      const readResponse = await readPost(bobsPostId)
+      expect(readResponse.status).toEqual(404)
     })
   })
 })
