@@ -81,12 +81,30 @@ class PostsController {
       return
     }
 
+    let post
+    try {
+      post = await this.readPost.read(id)
+    } catch (error) {
+      ctx.response.status = 500
+      ctx.response.data = createErrorResponseBody(1, error.toString())
+      return
+    }
+
+    if (post === null) {
+      ctx.response.body = createErrorResponseBody(
+        1,
+        `Post with id(${id}) does not exist`
+      )
+      ctx.response.status = 404
+      return
+    }
+
     try {
       await this.deletePost.delete(id)
       ctx.response.status = 204
     } catch (error) {
-      ctx.response.status = 404
-      ctx.response.body = createErrorResponseBody(1, error)
+      ctx.response.status = 500
+      ctx.response.body = createErrorResponseBody(1, error.toString())
     }
   }
 }

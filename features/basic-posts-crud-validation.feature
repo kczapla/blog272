@@ -5,3 +5,7 @@ Feature: Baisc posts CRUD validation
     Scenario: Read non-existent post
     When Bob reads non-existent post
     Then server should return fail status and inform user that it didn't found a resource
+
+    Scenario: Delete non-existent post
+    When Bob reads non-existent post
+    Then server should inform that it did not find a resource

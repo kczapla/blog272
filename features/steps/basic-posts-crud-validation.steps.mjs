@@ -4,6 +4,7 @@ expect.extend(matchers)
 
 import { errorResponseSchema } from "./response-schemas"
 import { readPost } from "./api-client"
+import { deletePost } from "./api-client/index.mjs"
 
 const feature = loadFeature("./features/basic-posts-crud-validation.feature")
 
@@ -21,5 +22,16 @@ defineFeature(feature, (test) => {
         expect(response.data).toMatchSchema(errorResponseSchema)
       }
     )
+  })
+
+  test("Delete non-existent post", ({ when, then }) => {
+    let response
+    when("Bob reads non-existent post", async () => {
+      response = await deletePost("0")
+    })
+    then("server should inform that it did not find a resource", () => {
+      expect(response.status).toEqual(404)
+      expect(response.data).toMatchSchema(errorResponseSchema)
+    })
   })
 })

@@ -17,6 +17,9 @@ export const readPost = async (postId) => {
 }
 
 export const deletePost = async (postId) => {
-  const deletePostResponse = await axios.delete(getPostsUrl() + `/${postId}`)
-  return { status: deletePostResponse.status, data: deletePostResponse.data }
+  try {
+    return await axios.delete(getPostsUrl() + `/${postId}`)
+  } catch (error) {
+    return { status: error.response.status, data: error.response.data }
+  }
 }

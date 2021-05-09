@@ -81,12 +81,17 @@ describe("PostController.create", () => {
 
 describe("PostController delete", () => {
   it("returns 404 if given post does not exist", async () => {
+    const readPost = {
+      read: async () => {
+        return null
+      },
+    }
     const deletePost = {
       delete: async () => {
         throw "post does not exist"
       },
     }
-    const postController = new PostsController({}, {}, deletePost)
+    const postController = new PostsController(readPost, {}, deletePost)
     const context = createContext()
 
     await postController.delete(context)
@@ -109,11 +114,16 @@ describe("PostController delete", () => {
     expect(context.response.status).toEqual(400)
   })
   it("returns 200 if given post was deleted", async () => {
+    const readPost = {
+      read: async () => {
+        return { id: 1 }
+      },
+    }
     const deletePost = {
       delete: async () => {},
     }
 
-    const postController = new PostsController({}, {}, deletePost)
+    const postController = new PostsController(readPost, {}, deletePost)
 
     const context = createContext()
     await postController.delete(context)
