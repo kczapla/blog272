@@ -5,8 +5,8 @@ import { createContext, createResponseBody } from "./posts.utils"
 describe("PostsController", () => {
   it("read returns 404", async () => {
     const posts = {
-      get: async () => {
-        throw "post does not exist"
+      read: async () => {
+        return null
       },
     }
     const postsController = new PostsController(posts)
@@ -21,7 +21,7 @@ describe("PostsController", () => {
         status: 0,
       },
     }
-    await postsController.read(context, async () => {})
+    await postsController.read(context)
     expect(context.response.status).toEqual(404)
   })
   it("read returns 200", async () => {

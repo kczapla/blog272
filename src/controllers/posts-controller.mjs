@@ -17,13 +17,25 @@ class PostsController {
   async read(ctx) {
     const id = ctx.request.params.id
 
+    let post
     try {
-      ctx.body = await this.readPost.read(id)
-      ctx.response.status = 200
+      post = await this.readPost.read(id)
     } catch (error) {
       ctx.body = createErrorResponseBody(1, error)
-      ctx.response.status = 404
+      ctx.response.status = 500
     }
+
+    if (post === null) {
+      ctx.response.body = createErrorResponseBody(
+        1,
+        `Post with id(${id}) does not exist`
+      )
+      ctx.response.status = 404
+      return
+    }
+
+    ctx.response.body = post
+    ctx.response.status = 200
   }
 
   async create(ctx) {

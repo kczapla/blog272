@@ -6,8 +6,11 @@ class ReadPost {
   }
 
   async read(id) {
-    const p = await this.postsService.read(id)
-    return new Post(p)
+    const post = await this.postsService.read(id)
+    if (Object.keys(post).length === 0) {
+      return null
+    }
+    return new Post(post)
   }
 }
 

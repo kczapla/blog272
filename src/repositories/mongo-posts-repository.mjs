@@ -16,6 +16,8 @@ class MongoPostsRepository {
     }
 
     post.publishing_date = ObjectId(post._id).getTimestamp()
+    post.id = post._id
+    delete post._id
     return post
   }
 
@@ -33,6 +35,8 @@ class MongoPostsRepository {
       const post = await this.postsCollection.insertOne(data)
       let insertedPost = post.ops[0]
       insertedPost.publishing_date = ObjectId(insertedPost._id).getTimestamp()
+      insertedPost.id = insertedPost._id
+      delete insertedPost._id
       return insertedPost
     } catch (error) {
       console.log(error)
