@@ -8,6 +8,9 @@
   },
   "scripts": {
     "pre-commit": "husky install",
+    "node:version": "node --version | sed -e s/^v//",
+    "node:image:os": "echo alpine",
+    "node:image:tag": "echo \"$(npm run -s node:version)-$(npm run -s node:image:os)\"",
     "start": "node --es-module-specifier-resolution=node src/main.mjs",
     "style:check": "prettier --check .",
     "style:format": "prettier --write .",
@@ -15,8 +18,8 @@
     "lint:fix": "eslint . --fix --ext mjs",
     "test:unit": "jest --config jest.config.json src/",
     "test:features": "jest features/",
-    "docker:test": "docker build --target test .",
-    "compose:test:features": "docker-compose run web-test-features",
+    "docker:test": "docker build --target test . --build-arg NODE_IMAGE_TAG=$(npm run -s node:image:tag)",
+    "compose:test:features": "NODE_IMAGE_TAG=$(npm run -s node:image:tag) docker-compose run web-test-features",
     "compose:down": "docker-compose down"
   },
   "author": "",
