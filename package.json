@@ -19,6 +19,7 @@
     "test:unit": "jest --config jest.config.json src/",
     "test:features": "jest features/",
     "docker:test": "docker build --target test . --build-arg NODE_IMAGE_TAG=$(npm run -s node:image:tag)",
+    "docker:clean": "docker system prune -af",
     "compose:test:features": "NODE_IMAGE_TAG=$(npm run -s node:image:tag) docker-compose run web-test-features",
     "compose:down": "docker-compose down"
   },
