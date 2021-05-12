@@ -11,7 +11,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
-      NODE_VERSION: 16.1-alpine
+      NODE_VERSION: 16.1
+      NODE_IMAGE_TAG: ${{ env.NODE_VERSION }}-alpine
       MONGO_PORT: 27017
       MONGO_DB: blog
     steps:
@@ -20,6 +21,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: style & lint & unit tests
-        run: npm run docker:test -- --build-arg ${{ env.NODE_VERSION }}
+        run: npm run docker:test -- --build-arg ${{ env.NODE_IMAGE_TAG }}
       - name: acceptance tests
         run: npm run compose:test:features
