@@ -1,0 +1,7 @@
+ARG NODE_IMAGE_TAG
+FROM node:${NODE_IMAGE_TAG}
+
+WORKDIR /app
+COPY . .
+RUN npm ci --production
+CMD ["npm", "start"]

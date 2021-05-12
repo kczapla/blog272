@@ -3,7 +3,7 @@ services:
     web:
         build:
             context: .
-            target: prod
+            dockerfile: docker/Dockerfile.prod
             args:
                 NODE_IMAGE_TAG: $NODE_IMAGE_TAG
         depends_on: 
@@ -26,7 +26,7 @@ services:
     web-test-features:
         build:
             context: .
-            target: test_features
+            dockerfile: docker/Dockerfile.acc
             args:
                 NODE_IMAGE_TAG: $NODE_IMAGE_TAG
         depends_on:

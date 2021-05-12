@@ -1,0 +1,7 @@
+ARG NODE_IMAGE_TAG
+FROM node:${NODE_IMAGE_TAG} as base
+
+WORKDIR /app
+COPY . .
+RUN npm ci
+RUN npm run style:check && npm run lint:check && npm run test:unit

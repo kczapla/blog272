@@ -1,0 +1,7 @@
+ARG NODE_IMAGE_TAG
+FROM node:${NODE_IMAGE_TAG}
+
+WORKDIR /acc_tests
+COPY . .
+RUN npm ci
+CMD ["npm", "run", "test:features"]
