@@ -4,6 +4,7 @@
 !docs
 !.husky
 !package.json
+!package-lock.json
 !.gitignore
 !.eslintignore
 !.eslintrc.json
