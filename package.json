@@ -16,8 +16,8 @@
     "test:unit": "jest --config jest.config.json src/",
     "test:features": "jest features/",
     "docker:test": "docker build --target test .",
-    "compose:test:features": "docker compose run web-test-features",
-    "compose:down": "docker compose down"
+    "compose:test:features": "docker-compose run web-test-features",
+    "compose:down": "docker-compose down"
   },
   "author": "",
   "license": "ISC",
