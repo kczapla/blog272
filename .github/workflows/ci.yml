@@ -20,6 +20,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: style & lint & unit tests
-        run: npm run docker:test -- --build-arg ${{ env.NODE_VERSION }}
+        run: npm run docker:test
       - name: acceptance tests
-        run: docker-compose run web-acc-tests
+        run: npm run compose:test:features

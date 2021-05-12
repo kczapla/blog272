@@ -17,3 +17,5 @@
 !.dockerignore
 !.github/
 !.github/**
+!docker/
+!docker/**
