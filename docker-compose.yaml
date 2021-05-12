@@ -5,7 +5,7 @@ services:
             context: .
             target: prod
             args:
-                NODE_VERSION: $NODE_VERSION
+                NODE_IMAGE_TAG: $NODE_IMAGE_TAG
         depends_on: 
             - db
         container_name: blog272
@@ -28,7 +28,7 @@ services:
             context: .
             target: test_features
             args:
-                NODE_VERSION: $NODE_VERSION
+                NODE_IMAGE_TAG: $NODE_IMAGE_TAG
         depends_on:
             - web
         environment:

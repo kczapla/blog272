@@ -1,5 +1,5 @@
-ARG NODE_VERSION=16.1-alpine
-FROM node:${NODE_VERSION} as base
+ARG NODE_IMAGE_TAG=16.1-alpine
+FROM node:${NODE_IMAGE_TAG} as base
 WORKDIR /app
 
 FROM base as dependencies
