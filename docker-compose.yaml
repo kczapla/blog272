@@ -9,7 +9,6 @@ services:
         depends_on: 
             - db
         container_name: blog272
-        env_file: .env
         environment:
             - MONGO_HOSTNAME=db
             - MONGO_PORT=$MONGO_PORT
