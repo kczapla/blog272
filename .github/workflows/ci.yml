@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_VERSION: 16.1
+      MONGO_PORT: 27017
+      MONGO_DB: blog
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
