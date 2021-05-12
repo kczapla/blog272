@@ -1,23 +1,22 @@
-FROM node:15.12-alpine as base
-
+ARG NODE_VERSION=16.1-alpine
+FROM node:${NODE_VERSION} as base
 WORKDIR /app
 
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-
-FROM base as unit_test
-
-RUN npm ci
+FROM base as dependencies
 COPY . .
-CMD ["npm", "run", "test"]
-
-FROM base as acc_tests
+RUN npm ci --production
+RUN cp -R node_modules /prod_node_modules
 RUN npm ci
+
+FROM dependencies as test
+RUN npm run style:check && npm run lint:check && npm run test:unit
+
+FROM dependencies as test_features
 COPY . .
-CMD ["npm", "run", "acc_tests"]
+CMD ["npm", "run", "test:features"]
 
 FROM base as prod
 ENV NODE_ENV=production
-RUN npm ci --production
+COPY --from=dependencies /prod_node_modules ./node_modules
 COPY . .
 CMD ["npm", "start"]

@@ -1,0 +1,22 @@
+name: ci
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: 16.1
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: style & lint & unit tests
+        run: npm run docker:test -- --build-arg ${{ env.NODE_VERSION }}
+      - name: acceptance tests
+        run: docker compose run web-acc-tests

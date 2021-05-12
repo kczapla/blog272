@@ -4,6 +4,8 @@ services:
         build:
             context: .
             target: prod
+            args:
+                NODE_VERSION: $NODE_VERSION
         depends_on: 
             - db
         container_name: blog272
@@ -22,10 +24,12 @@ services:
         ports: 
             - "27017:27017"
         restart: always
-    web-acc-tests:
+    web-test-features:
         build:
             context: .
-            target: acc_tests
+            target: test_features
+            args:
+                NODE_VERSION: $NODE_VERSION
         depends_on:
             - web
         environment:

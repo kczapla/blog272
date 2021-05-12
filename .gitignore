@@ -1,8 +1,8 @@
-/*
-!/features
-!/src
-!/docs
-!/.husky
+*
+!features
+!src
+!docs
+!.husky
 !package.json
 !.gitignore
 !.eslintignore
@@ -14,3 +14,5 @@
 !Dockerfile
 !docker-compose.yaml
 !.dockerignore
+!.github/
+!.github/**

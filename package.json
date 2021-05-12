@@ -9,10 +9,15 @@
   "scripts": {
     "pre-commit": "husky install",
     "start": "node --es-module-specifier-resolution=node src/main.mjs",
-    "test": "jest --config jest.config.json src/",
-    "lint": "eslint . --fix --ext mjs",
-    "format": "prettier --write .",
-    "acc_tests": "jest features"
+    "style:check": "prettier --check .",
+    "style:format": "prettier --write .",
+    "lint:check": "eslint . --ext mjs",
+    "lint:fix": "eslint . --fix --ext mjs",
+    "test:unit": "jest --config jest.config.json src/",
+    "test:features": "jest features/",
+    "docker:test": "docker build --target test .",
+    "compose:test:features": "docker compose run web-test-features",
+    "compose:down": "docker compose down"
   },
   "author": "",
   "license": "ISC",
