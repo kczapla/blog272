@@ -1,7 +1,10 @@
 *
 !features
+!features/**
 !src
+!src/**
 !docs
+!docs/**
 !.husky
 !package.json
 !package-lock.json
@@ -19,3 +22,5 @@
 !.github/**
 !docker/
 !docker/**
+
+*.swp
