@@ -19,7 +19,7 @@ class CryptoEncriptionService {
       this.numberOfIterations,
       this.hashLength,
       this.shaAlgo
-    )
+    ).toString("hex")
   }
 }
 

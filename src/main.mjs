@@ -13,6 +13,7 @@ import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
 import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
+import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
 import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
 async function main() {
@@ -46,9 +47,10 @@ async function main() {
   const postsController = new PostsController(posts, createPosts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
+  const usersRepository = new MongoDBUsersRepository(db)
   const encriptionService = new CryptoEncriptionService(10, 64)
   const createUserUserCase = new CreateUserUseCase(
-    { exists: async () => {}, save: async () => {} },
+    usersRepository,
     encriptionService
   )
   const usersRouter = new UsersHttpAdapter(createUserUserCase)

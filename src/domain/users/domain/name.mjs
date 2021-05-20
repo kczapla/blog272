@@ -5,12 +5,12 @@ class Name {
     this.name = name
   }
 
-  getName() {
+  getValue() {
     return this.name
   }
 
   equals(other) {
-    return this.getName() === other.getName()
+    return this.getValue() === other.getValue()
   }
 
   static create(name) {
