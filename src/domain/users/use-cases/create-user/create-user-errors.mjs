@@ -4,3 +4,9 @@ export class UserAlreadyExists extends Error {
     super(message)
   }
 }
+
+export class InvalidUserData extends Error {
+  constructor(message) {
+    super(message)
+  }
+}

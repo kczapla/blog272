@@ -4,6 +4,7 @@ import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
 import { appConfig, mongoDbConfig } from "./config"
+import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
@@ -42,9 +43,12 @@ async function main() {
   const postsController = new PostsController(posts, createPosts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
+  const usersRouter = new UsersHttpAdapter({ execute: async () => {} })
+
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
+  versionZeroRouter.addRouter(usersRouter)
   const apiRouter = new RouterComposite("/api")
 
   apiRouter.addRouter(versionZeroRouter)
