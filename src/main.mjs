@@ -4,13 +4,16 @@ import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
 import { appConfig, mongoDbConfig } from "./config"
-import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
 import { OpenApiDoc, ReadPost, CreatePost, DeletePost } from "./domain"
 import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
+
+import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
+import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
+import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
 async function main() {
   const openApiDocPath = path.join(
@@ -43,7 +46,12 @@ async function main() {
   const postsController = new PostsController(posts, createPosts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
-  const usersRouter = new UsersHttpAdapter({ execute: async () => {} })
+  const encriptionService = new CryptoEncriptionService(10, 64)
+  const createUserUserCase = new CreateUserUseCase(
+    { exists: async () => {}, save: async () => {} },
+    encriptionService
+  )
+  const usersRouter = new UsersHttpAdapter(createUserUserCase)
 
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)

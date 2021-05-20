@@ -13,10 +13,10 @@ class UsersHttpAdapter {
     const router = new Router()
     router.post("/users", async (ctx) => {
       try {
-        await this.createUserUseCase.execute(ctx.request, ctx.response)
+        await this.createUserUseCase.execute(ctx.request.body)
         ctx.status = 201
       } catch (e) {
-        ctx.body = e.message
+        ctx.body = { message: e.message }
         if (e instanceof UserAlreadyExists) {
           ctx.status = 409
         } else if (e instanceof InvalidUserData) {
