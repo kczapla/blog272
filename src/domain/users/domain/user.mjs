@@ -1,10 +1,15 @@
 import { GenericUserError } from "./user-errors"
 
 class User {
-  constructor(email, encryptedPassword, salt) {
+  constructor(name, email, encryptedPassword, salt) {
+    this.name = name
     this.email = email
     this.encryptedPassword = encryptedPassword
     this.salt = salt
+  }
+
+  getName() {
+    return this.name
   }
 
   getEmail() {
@@ -21,6 +26,7 @@ class User {
 
   equals(other) {
     let areValueObjTheSame = []
+    areValueObjTheSame.push(this.getName().equals(other.getName()))
     areValueObjTheSame.push(this.getEmail().equals(other.getEmail()))
     areValueObjTheSame.push(
       this.getEncryptedPassword().equals(other.getEncryptedPassword())
@@ -30,7 +36,10 @@ class User {
     return areValueObjTheSame.every((isTheSame) => isTheSame)
   }
 
-  static create(email, encryptedPassword, salt) {
+  static create(name, email, encryptedPassword, salt) {
+    if (name === null || name === undefined) {
+      throw new GenericUserError("User name is null/undefined")
+    }
     if (email === null || email === undefined) {
       throw new GenericUserError("User email is null/undefined")
     }
@@ -41,7 +50,7 @@ class User {
       throw new GenericUserError("User salt is null/undefined")
     }
 
-    return new User(email, encryptedPassword, salt)
+    return new User(name, email, encryptedPassword, salt)
   }
 }
 

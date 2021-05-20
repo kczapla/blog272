@@ -31,6 +31,7 @@ describe("create user use case", () => {
     await createUserUseCase.execute(createUserDTO)
 
     expect(userRepositoryMock.save).toBeCalledWith({
+      name: { name: "bob" },
       email: { email: "bob@bob.com" },
       encryptedPassword: { hash: "hash" },
       salt: { salt: "salt" },

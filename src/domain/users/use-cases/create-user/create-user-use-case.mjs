@@ -1,3 +1,4 @@
+import Name from "../../domain/name"
 import Salt from "../../domain/salt"
 import User from "../../domain/user"
 import Email from "../../domain/email"
@@ -12,8 +13,9 @@ class CreateUserUseCase {
   }
 
   async execute(createUserDTO) {
-    const { email, password } = createUserDTO
+    const { name, email, password } = createUserDTO
 
+    const userName = Name.create(name)
     const userEmail = Email.create(email)
     const userAlreadyExist = await this.userRepository.exists(
       userEmail.getValue()
@@ -31,7 +33,12 @@ class CreateUserUseCase {
       )
     )
 
-    const user = User.create(userEmail, encryptedPassword, passwordSalt)
+    const user = User.create(
+      userName,
+      userEmail,
+      encryptedPassword,
+      passwordSalt
+    )
 
     await this.userRepository.save(user)
   }
