@@ -1,12 +1,12 @@
 import Salt from "../salt"
-import { InvalidUserData } from "../user-errors"
+import UserError from "../user-error"
 
 describe("encrypted password", () => {
   describe("create function", () => {
     it.each([null, undefined, ""])(
       "throws an error if salt is invalid",
       (salt) => {
-        expect(() => Salt.create(salt)).toThrow(InvalidUserData)
+        expect(() => Salt.create(salt)).toThrow(UserError)
       }
     )
   })

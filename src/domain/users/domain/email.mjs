@@ -1,4 +1,4 @@
-import { InvalidUserData } from "./user-errors.mjs"
+import UserError from "./user-error.mjs"
 
 class Email {
   constructor(email) {
@@ -15,16 +15,16 @@ class Email {
 
   static create(email) {
     if (email === null) {
-      throw new InvalidUserData("Email is null.")
+      throw new UserError("Email is null.")
     }
     if (email === undefined) {
-      throw new InvalidUserData("Email is undefined.")
+      throw new UserError("Email is undefined.")
     }
     if (email.length < 5) {
-      throw new InvalidUserData("Email length is below 5.")
+      throw new UserError("Email length is below 5.")
     }
     if (email.length > 350) {
-      throw new InvalidUserData("Email length is above 350.")
+      throw new UserError("Email length is above 350.")
     }
 
     return new Email(email)

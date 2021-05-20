@@ -1,4 +1,4 @@
-import { InvalidUserData } from "./user-errors"
+import UserError from "./user-error"
 
 class Name {
   constructor(name) {
@@ -15,24 +15,20 @@ class Name {
 
   static create(name) {
     if (name === null) {
-      throw new InvalidUserData("Email is null.")
+      throw new UserError("Email is null.")
     }
     if (name === undefined) {
-      throw new InvalidUserData("Email is undefined.")
+      throw new UserError("Email is undefined.")
     }
     if (name.length < 2) {
-      throw new InvalidUserData(
-        "Name is too short. Min length is 2 characters."
-      )
+      throw new UserError("Name is too short. Min length is 2 characters.")
     }
     if (name.length > 32) {
-      throw new InvalidUserData(
-        "Name is too long. Max length is 32 characters."
-      )
+      throw new UserError("Name is too long. Max length is 32 characters.")
     }
 
     if (!name.match(/^\w+$/)) {
-      throw new InvalidUserData("Only alphanumeric values are allowed in name.")
+      throw new UserError("Only alphanumeric values are allowed in name.")
     }
 
     return new Name(name)

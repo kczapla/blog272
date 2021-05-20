@@ -1,12 +1,12 @@
 import EncryptedPassword from "../encrypted-password"
-import { InvalidUserData } from "../user-errors"
+import UserError from "../user-error"
 
 describe("encrypted password", () => {
   describe("create function", () => {
     it.each([null, undefined, ""])(
       "throws an error if hash is invalid",
       (hash) => {
-        expect(() => EncryptedPassword.create(hash)).toThrow(InvalidUserData)
+        expect(() => EncryptedPassword.create(hash)).toThrow(UserError)
       }
     )
   })

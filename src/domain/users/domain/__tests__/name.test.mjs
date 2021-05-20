@@ -1,12 +1,12 @@
 import Name from "../name"
-import { InvalidUserData } from "../user-errors"
+import UserError from "../user-error"
 
 describe("User Name", () => {
   describe("create function", () => {
     it.each([null, undefined, "n", "n".repeat(33), "ad@#$%"])(
       "throws if name is invalid",
       (name) => {
-        expect(() => Name.create(name)).toThrow(InvalidUserData)
+        expect(() => Name.create(name)).toThrow(UserError)
       }
     )
   })

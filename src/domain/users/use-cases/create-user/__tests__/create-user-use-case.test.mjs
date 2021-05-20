@@ -1,6 +1,5 @@
 import CreateUserUseCase from "../create-user-use-case"
-import { UserAlreadyExists } from "../create-user-errors"
-import { InvalidUserData } from "../../../domain/user-errors"
+import { UserAlreadyExists, InvalidUserData } from "../create-user-errors"
 
 describe("create user use case", () => {
   afterEach(() => {

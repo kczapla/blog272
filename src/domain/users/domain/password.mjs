@@ -1,4 +1,4 @@
-import { InvalidUserData } from "./user-errors"
+import UserError from "./user-error"
 
 class Password {
   constructor(password) {
@@ -15,20 +15,16 @@ class Password {
 
   static create(password) {
     if (password === null) {
-      throw new InvalidUserData("Password is null.")
+      throw new UserError("Password is null.")
     }
     if (password === undefined) {
-      throw new InvalidUserData("Password is undefined.")
+      throw new UserError("Password is undefined.")
     }
     if (password.length < 8) {
-      throw new InvalidUserData(
-        "Password is to short. Min length is 8 characters."
-      )
+      throw new UserError("Password is to short. Min length is 8 characters.")
     }
     if (100 < password.length) {
-      throw new InvalidUserData(
-        "Password it too long. Max length is 100 characters."
-      )
+      throw new UserError("Password it too long. Max length is 100 characters.")
     }
 
     return new Password(password)

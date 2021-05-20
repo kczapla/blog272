@@ -1,4 +1,4 @@
-import { GenericUserError } from "./user-errors"
+import UserError from "./user-error"
 
 class User {
   constructor(name, email, encryptedPassword, salt) {
@@ -38,16 +38,16 @@ class User {
 
   static create(name, email, encryptedPassword, salt) {
     if (name === null || name === undefined) {
-      throw new GenericUserError("User name is null/undefined")
+      throw new UserError("User name is null/undefined")
     }
     if (email === null || email === undefined) {
-      throw new GenericUserError("User email is null/undefined")
+      throw new UserError("User email is null/undefined")
     }
     if (encryptedPassword === null || encryptedPassword === undefined) {
-      throw new GenericUserError("User encrypted password is null/undefined")
+      throw new UserError("User encrypted password is null/undefined")
     }
     if (salt === null || salt === undefined) {
-      throw new GenericUserError("User salt is null/undefined")
+      throw new UserError("User salt is null/undefined")
     }
 
     return new User(name, email, encryptedPassword, salt)

@@ -1,4 +1,4 @@
-import { InvalidUserData } from "./user-errors"
+import UserError from "./user-error"
 
 class EncryptedPassword {
   constructor(hash) {
@@ -15,13 +15,13 @@ class EncryptedPassword {
 
   static create(hash) {
     if (hash === null) {
-      throw new InvalidUserData("Hash value is null.")
+      throw new UserError("Hash value is null.")
     }
     if (hash === undefined) {
-      throw new InvalidUserData("Hash value is undefined.")
+      throw new UserError("Hash value is undefined.")
     }
     if (hash === "") {
-      throw new InvalidUserData("Hash is empty.")
+      throw new UserError("Hash is empty.")
     }
 
     return new EncryptedPassword(hash)

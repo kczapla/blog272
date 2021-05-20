@@ -1,4 +1,4 @@
-import { InvalidUserData } from "./user-errors"
+import UserError from "./user-error"
 
 class Salt {
   constructor(salt) {
@@ -15,13 +15,13 @@ class Salt {
 
   static create(salt) {
     if (salt === null) {
-      throw new InvalidUserData("Salt value is null.")
+      throw new UserError("Salt value is null.")
     }
     if (salt === undefined) {
-      throw new InvalidUserData("Salt value is undefined.")
+      throw new UserError("Salt value is undefined.")
     }
     if (salt === "") {
-      throw new InvalidUserData("Salt is empty.")
+      throw new UserError("Salt is empty.")
     }
 
     return new Salt(salt)

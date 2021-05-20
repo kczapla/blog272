@@ -4,7 +4,8 @@ import User from "../../domain/user"
 import Email from "../../domain/email"
 import Password from "../../domain/password"
 import EncryptedPassword from "../../domain/encrypted-password"
-import { UserAlreadyExists } from "./create-user-errors"
+import UserError from "../../domain/user-error"
+import { UserAlreadyExists, InvalidUserData } from "./create-user-errors"
 
 class CreateUserUseCase {
   constructor(userRepository, encryptionService) {
@@ -13,18 +14,28 @@ class CreateUserUseCase {
   }
 
   async execute(createUserDTO) {
-    const { name, email, password } = createUserDTO
+    let userName
+    let userEmail
+    let userPassword
 
-    const userName = Name.create(name)
-    const userEmail = Email.create(email)
+    try {
+      const { name, email, password } = createUserDTO
+      userName = Name.create(name)
+      userEmail = Email.create(email)
+      userPassword = Password.create(password)
+    } catch (e) {
+      if (e instanceof UserError) {
+        throw new InvalidUserData(e.message)
+      }
+    }
+
     const userAlreadyExist = await this.userRepository.exists(
       userEmail.getValue()
     )
     if (userAlreadyExist) {
-      throw new UserAlreadyExists(email)
+      throw new UserAlreadyExists(userEmail.getValue())
     }
 
-    const userPassword = Password.create(password)
     const passwordSalt = Salt.create(this.encryptionService.generateSalt())
     const encryptedPassword = EncryptedPassword.create(
       this.encryptionService.hash(

@@ -1,12 +1,12 @@
 import Password from "../password"
-import { InvalidUserData } from "../user-errors"
+import UserError from "../user-error"
 
 describe("Password", () => {
   describe("create function", () => {
     it.each(["aaa", "a".repeat(101), null, undefined])(
       "throws InvalidUserData when password is too long",
       (password) => {
-        expect(() => Password.create(password)).toThrow(InvalidUserData)
+        expect(() => Password.create(password)).toThrow(UserError)
       }
     )
   })
