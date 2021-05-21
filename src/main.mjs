@@ -11,6 +11,11 @@ import { OpenApiDoc, ReadPost, CreatePost, DeletePost } from "./domain"
 import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
+import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
+import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
+import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
+import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
+
 async function main() {
   const openApiDocPath = path.join(
     path.dirname(""),
@@ -42,9 +47,18 @@ async function main() {
   const postsController = new PostsController(posts, createPosts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
+  const usersRepository = new MongoDBUsersRepository(db)
+  const encriptionService = new CryptoEncriptionService(10, 64)
+  const createUserUserCase = new CreateUserUseCase(
+    usersRepository,
+    encriptionService
+  )
+  const usersRouter = new UsersHttpAdapter(createUserUserCase)
+
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
+  versionZeroRouter.addRouter(usersRouter)
   const apiRouter = new RouterComposite("/api")
 
   apiRouter.addRouter(versionZeroRouter)

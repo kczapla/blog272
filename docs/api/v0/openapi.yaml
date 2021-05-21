@@ -7,6 +7,23 @@ servers:
   - url: https://localhost:3000/api/v0
     description: Local developemnt server
 paths:
+  /users:
+    post:
+      summary: Create user
+      tags:
+        - posts
+      requestBody:
+        "$ref": "#/components/requestBodies/User"
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+        "400":
+          description: Bad request.
+          "$ref": "#/components/schemas/ErrorMessage"
   "/posts":
     post:
       summary: Create post.
@@ -406,6 +423,28 @@ components:
                   type: string
               content:
                 type: string
+    User:
+      description: Object containing user information at creation time
+      required: True
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 2
+                maxLength: 32
+              email:
+                type: string
+                format: email
+                minLength: 5
+                maxLength: 320
+              password:
+                type: string
+                format: password
+                minLength: 8
+                maxLength: 100
   responses:
     BadRequest:
       description: Bad request.
@@ -436,6 +475,21 @@ components:
       required:
         - code
         - message
+    User:
+      description: Object representing blog user.
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+        aboutme:
+          type: string
+          format: markdown
     Post:
       description: Object representing a blog post.
       type: object
