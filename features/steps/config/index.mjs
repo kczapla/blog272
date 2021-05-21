@@ -7,3 +7,7 @@ export const getAppUrl = () => {
 export const getPostsUrl = () => {
   return getAppUrl() + "/api/v0/posts"
 }
+
+export const getUsersUrl = () => {
+  return getAppUrl() + "/api/v0/users"
+}
