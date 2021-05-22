@@ -11,7 +11,7 @@
     "node:version": "node --version | sed -e s/^v//",
     "node:image:os": "echo alpine",
     "node:image:tag": "echo \"$(npm run -s node:version)-$(npm run -s node:image:os)\"",
-    "start": "node --es-module-specifier-resolution=node src/main.mjs",
+    "start": "node -r dotenv/config --es-module-specifier-resolution=node src/main.mjs",
     "style:check": "prettier --check .",
     "style:format": "prettier --write .",
     "lint:check": "eslint . --ext mjs",
@@ -28,6 +28,7 @@
   "dependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
+    "dotenv": "^10.0.0",
     "js-yaml": "^3.14.1",
     "jsonschema": "^1.4.0",
     "koa": "^2.13.1",
