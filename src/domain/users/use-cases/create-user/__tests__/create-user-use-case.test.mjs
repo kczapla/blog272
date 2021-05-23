@@ -6,6 +6,7 @@ describe("create user use case", () => {
     jest.clearAllMocks()
   })
   const userRepositoryMock = {
+    nextIdentity: jest.fn(),
     save: jest.fn(),
     exists: jest.fn(),
   }
@@ -19,6 +20,7 @@ describe("create user use case", () => {
       email: "bob@bob.com",
       password: "bobspassword",
     }
+    userRepositoryMock.nextIdentity.mockReturnValue("1111")
     userRepositoryMock.exists.mockReturnValue(false)
     encryptionService.hash.mockReturnValue("hash")
     encryptionService.generateSalt.mockReturnValue("salt")
@@ -30,6 +32,7 @@ describe("create user use case", () => {
     await createUserUseCase.execute(createUserDTO)
 
     expect(userRepositoryMock.save).toBeCalledWith({
+      id: { id: "1111" },
       name: { name: "bob" },
       email: { email: "bob@bob.com" },
       encryptedPassword: { hash: "hash" },

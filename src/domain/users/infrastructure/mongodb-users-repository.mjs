@@ -1,7 +1,14 @@
+import bson from "bson"
+const { ObjectId } = bson
+
 class MongoDBUsersRepository {
   constructor(dbClient) {
     this.dbClient = dbClient
     this.usersCollection = dbClient.collection("users")
+  }
+
+  nextIdentity() {
+    return ObjectId().toString()
   }
 
   async exists(userEmail) {

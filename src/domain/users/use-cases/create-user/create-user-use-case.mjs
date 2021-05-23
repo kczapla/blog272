@@ -1,3 +1,4 @@
+import Id from "../../domain/id"
 import Name from "../../domain/name"
 import Salt from "../../domain/salt"
 import User from "../../domain/user"
@@ -44,7 +45,10 @@ class CreateUserUseCase {
       )
     )
 
+    const id = Id.create(this.userRepository.nextIdentity())
+
     const user = User.create(
+      id,
       userName,
       userEmail,
       encryptedPassword,
