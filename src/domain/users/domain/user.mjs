@@ -1,11 +1,16 @@
 import UserError from "./user-error"
 
 class User {
-  constructor(name, email, encryptedPassword, salt) {
+  constructor(id, name, email, encryptedPassword, salt) {
+    this.id = id
     this.name = name
     this.email = email
     this.encryptedPassword = encryptedPassword
     this.salt = salt
+  }
+
+  getId() {
+    return this.id
   }
 
   getName() {
@@ -26,6 +31,7 @@ class User {
 
   equals(other) {
     let areValueObjTheSame = []
+    areValueObjTheSame.push(this.getId().equals(other.getId()))
     areValueObjTheSame.push(this.getName().equals(other.getName()))
     areValueObjTheSame.push(this.getEmail().equals(other.getEmail()))
     areValueObjTheSame.push(
@@ -36,7 +42,10 @@ class User {
     return areValueObjTheSame.every((isTheSame) => isTheSame)
   }
 
-  static create(name, email, encryptedPassword, salt) {
+  static create(id, name, email, encryptedPassword, salt) {
+    if (id === null || id === undefined) {
+      throw new UserError("User id is null/undefined")
+    }
     if (name === null || name === undefined) {
       throw new UserError("User name is null/undefined")
     }
@@ -50,7 +59,7 @@ class User {
       throw new UserError("User salt is null/undefined")
     }
 
-    return new User(name, email, encryptedPassword, salt)
+    return new User(id, name, email, encryptedPassword, salt)
   }
 }
 
