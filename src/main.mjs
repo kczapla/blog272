@@ -16,6 +16,8 @@ import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-
 import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
 import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
+import AuthenticationHttpAdapter from "./domain/users/infrastructure/authentication-http-adapter"
+
 async function main() {
   const openApiDocPath = path.join(
     path.dirname(""),
@@ -55,10 +57,15 @@ async function main() {
   )
   const usersRouter = new UsersHttpAdapter(createUserUserCase)
 
+  const authRouter = new AuthenticationHttpAdapter({
+    execute: async () => "aaaaaaaaa",
+  })
+
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
+  versionZeroRouter.addRouter(authRouter)
   const apiRouter = new RouterComposite("/api")
 
   apiRouter.addRouter(versionZeroRouter)
