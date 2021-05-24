@@ -7,6 +7,20 @@ servers:
   - url: https://localhost:3000/api/v0
     description: Local developemnt server
 paths:
+  /login:
+    post:
+      description: Login user the system and give him access to use protected routes.
+      tags:
+        - authentication
+      requestBody:
+        "$ref": "#/components/requestBodies/Login"
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Token"
   /users:
     post:
       summary: Create user
@@ -445,6 +459,24 @@ components:
                 format: password
                 minLength: 8
                 maxLength: 100
+    Login:
+      description: Object containing login credentails
+      required: True
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+                minLength: 5
+                maxLength: 320
+              password:
+                type: string
+                format: password
+                minLength: 8
+                maxLength: 100
   responses:
     BadRequest:
       description: Bad request.
@@ -465,6 +497,11 @@ components:
           schema:
             "$ref": "#/components/schemas/ErrorMessage"
   schemas:
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
     ErrorMessage:
       type: object
       properties:

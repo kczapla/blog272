@@ -23,7 +23,8 @@ defineFeature(feature, (test) => {
 
     then("server returns authorizes him successfully", () => {
       expect(loginResponse.status).toEqual(201)
-      expect(loginResponse.body.token).toMatch(/.+/)
+      expect(loginResponse.data).toHaveProperty("token")
+      expect(loginResponse.data.token).toMatch(/.+/)
     })
   })
 })

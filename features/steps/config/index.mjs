@@ -11,3 +11,7 @@ export const getPostsUrl = () => {
 export const getUsersUrl = () => {
   return getAppUrl() + "/api/v0/users"
 }
+
+export const getLoginUrl = () => {
+  return getAppUrl() + "/api/v0/login"
+}

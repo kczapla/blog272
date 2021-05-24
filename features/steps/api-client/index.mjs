@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { getAppUrl, getPostsUrl, getUsersUrl } from "../config"
+import { getLoginUrl, getPostsUrl, getUsersUrl } from "../config"
 
 export const createPost = async (postRequestBody) => {
   const createPostResponse = await axios.post(getPostsUrl(), postRequestBody)
@@ -34,7 +34,7 @@ export const createUser = async (createUserDTO) => {
 
 export const loginUser = async (loginUserDTO) => {
   try {
-    return await axios.post(getAppUrl() + "/login", loginUserDTO)
+    return await axios.post(getLoginUrl(), loginUserDTO)
   } catch (error) {
     return { status: error.response.status, data: error.response.data }
   }
