@@ -1,7 +1,10 @@
 import Email from "../../domain/email.mjs"
 import Password from "../../domain/password.mjs"
 import UserError from "../../domain/user-error"
-import { InvalidUserCredentails, UserUnauthorized } from "./login-user-errors"
+import {
+  InvalidUserCredentails,
+  UserUnauthorized,
+} from "./get-authentication-token-use-case-errors"
 
 class GetAuthenticationTokenUseCase {
   constructor(userRepository, encryptionService, authTokenService) {

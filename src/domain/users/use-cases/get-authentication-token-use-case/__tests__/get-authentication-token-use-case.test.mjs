@@ -1,5 +1,8 @@
 import GetAuthenticationTokenUseCase from "../get-authentication-token-use-case"
-import { InvalidUserCredentails, UserUnauthorized } from "../login-user-errors"
+import {
+  InvalidUserCredentails,
+  UserUnauthorized,
+} from "../get-authentication-token-use-case-errors"
 
 const createGetAuthenticationTokenDTO = () => {
   return {

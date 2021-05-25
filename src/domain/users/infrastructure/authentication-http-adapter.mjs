@@ -2,7 +2,7 @@ import Router from "koa-router"
 import {
   UserUnauthorized,
   InvalidUserCredentails,
-} from "../use-cases/login-user/login-user-errors"
+} from "../use-cases/get-authentication-token-use-case/get-authentication-token-use-case-errors"
 
 class AuthenticationHttpAdapter {
   constructor(loginUserUseCase) {

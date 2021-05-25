@@ -16,7 +16,7 @@ import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-
 import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
 import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
-import GetAuthenticationTokenUseCase from "./domain/users/use-cases/login-user/get-authentication-token-use-case"
+import GetAuthenticationTokenUseCase from "./domain/users/use-cases/get-authentication-token-use-case/get-authentication-token-use-case"
 import JWTTokenService from "./domain/users/infrastructure/jwt-token-service"
 import AuthenticationHttpAdapter from "./domain/users/infrastructure/authentication-http-adapter"
 
