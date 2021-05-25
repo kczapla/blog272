@@ -31,6 +31,7 @@
     "dotenv": "^10.0.0",
     "js-yaml": "^3.14.1",
     "jsonschema": "^1.4.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",

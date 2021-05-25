@@ -14,7 +14,7 @@ class AuthenticationHttpAdapter {
     router.post("/login", async (ctx) => {
       try {
         const token = await this.loginUserUseCase.execute(ctx.request.body)
-        ctx.body = { token: token }
+        ctx.body = token
         ctx.status = 201
       } catch (e) {
         ctx.body = { message: e.message }

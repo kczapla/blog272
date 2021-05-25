@@ -1,6 +1,13 @@
 import bson from "bson"
 const { ObjectId } = bson
 
+import Id from "../domain/id"
+import Name from "../domain/name"
+import Salt from "../domain/salt"
+import User from "../domain/user"
+import Email from "../domain/email"
+import EncryptedPassword from "../domain/encrypted-password"
+
 class MongoDBUsersRepository {
   constructor(dbClient) {
     this.dbClient = dbClient
@@ -9,6 +16,22 @@ class MongoDBUsersRepository {
 
   nextIdentity() {
     return ObjectId().toString()
+  }
+
+  async findByEmail(userEmail) {
+    const rawUser = await this.usersCollection.findOne({ email: userEmail })
+
+    if (rawUser == null) {
+      return rawUser
+    }
+
+    const id = Id.create(rawUser._id)
+    const name = Name.create(rawUser.name)
+    const salt = Salt.create(rawUser.salt)
+    const email = Email.create(rawUser.email)
+    const encryptedPassword = EncryptedPassword.create(rawUser.password)
+
+    return User.create(id, name, email, encryptedPassword, salt)
   }
 
   async exists(userEmail) {

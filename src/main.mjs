@@ -3,7 +3,7 @@ import path from "path"
 import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
-import { appConfig, mongoDbConfig } from "./config"
+import { appConfig, mongoDbConfig, securityConfig } from "./config"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
@@ -16,6 +16,8 @@ import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-
 import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
 import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
+import GetAuthenticationTokenUseCase from "./domain/users/use-cases/login-user/get-authentication-token-use-case"
+import JWTTokenService from "./domain/users/infrastructure/jwt-token-service"
 import AuthenticationHttpAdapter from "./domain/users/infrastructure/authentication-http-adapter"
 
 async function main() {
@@ -56,10 +58,18 @@ async function main() {
     encriptionService
   )
   const usersRouter = new UsersHttpAdapter(createUserUserCase)
-
-  const authRouter = new AuthenticationHttpAdapter({
-    execute: async () => "aaaaaaaaa",
-  })
+  const jwtTokenService = new JWTTokenService(
+    "3min",
+    securityConfig.getJwtSecret()
+  )
+  const getAuthenticationTokenUseCase = new GetAuthenticationTokenUseCase(
+    usersRepository,
+    encriptionService,
+    jwtTokenService
+  )
+  const authRouter = new AuthenticationHttpAdapter(
+    getAuthenticationTokenUseCase
+  )
 
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)

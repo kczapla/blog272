@@ -36,7 +36,7 @@ const createUserStub = () => {
         },
       }
     },
-    getHash: () => {
+    getEncryptedPassword: () => {
       return {
         getValue: () => {
           return "abc"

@@ -1,6 +1,6 @@
 import Email from "../../domain/email.mjs"
 import Password from "../../domain/password.mjs"
-import { UserError } from "./../../domain/user-error"
+import UserError from "../../domain/user-error"
 import { InvalidUserCredentails, UserUnauthorized } from "./login-user-errors"
 
 class GetAuthenticationTokenUseCase {
@@ -32,7 +32,7 @@ class GetAuthenticationTokenUseCase {
       user.getSalt().getValue()
     )
 
-    if (hash !== user.getHash().getValue()) {
+    if (hash !== user.getEncryptedPassword().getValue()) {
       throw new UserUnauthorized()
     }
     return {
