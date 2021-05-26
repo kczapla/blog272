@@ -41,6 +41,7 @@ class MongoDBUsersRepository {
 
   async save(user) {
     await this.usersCollection.insertOne({
+      _id: user.getId().getValue(),
       name: user.getName().getValue(),
       email: user.getEmail().getValue(),
       password: user.getEncryptedPassword().getValue(),
