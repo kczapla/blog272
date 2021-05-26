@@ -38,6 +38,24 @@ paths:
         "400":
           description: Bad request.
           "$ref": "#/components/schemas/ErrorMessage"
+  /users/${userId}:
+    delete:
+      description: Delete user account
+      parameters:
+      - $ref: "#/components/parameters/userId"
+      tags:
+        - users
+      security:
+        - jwtAuth: []
+      responses:
+        200:
+          $ref: "#/components/responses/Ok"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
   "/posts":
     post:
       summary: Create post.
@@ -348,6 +366,11 @@ components:
       description: URI location of a resource.
       schema:
         type: string
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   links:
     GetPostById:
       operationId: getPost
@@ -380,6 +403,13 @@ components:
         The `id` value in the response can be reused as `commentId` paramter in
         `DELETE /posts/{postId}/comments/{commentId}`
   parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     postId:
       name: postId
       in: path
@@ -478,6 +508,8 @@ components:
                 minLength: 8
                 maxLength: 100
   responses:
+    Ok:
+      description: Ok.
     BadRequest:
       description: Bad request.
       content:

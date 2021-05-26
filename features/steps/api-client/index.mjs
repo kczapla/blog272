@@ -39,3 +39,14 @@ export const loginUser = async (loginUserDTO) => {
     return { status: error.response.status, data: error.response.data }
   }
 }
+
+export const deleteUser = async (userId, authToken) => {
+  const headers = { Authentication: `Bearer ${authToken}` }
+  try {
+    return await axios.delete(getUsersUrl() + `/${userId}`, {
+      headers: headers,
+    })
+  } catch (error) {
+    return { status: error.response.status, data: error.response.data }
+  }
+}
