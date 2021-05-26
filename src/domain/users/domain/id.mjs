@@ -5,6 +5,10 @@ class Id {
     this.id = id
   }
 
+  getValue() {
+    return this.id
+  }
+
   equals(other) {
     return this.id === other.id
   }
