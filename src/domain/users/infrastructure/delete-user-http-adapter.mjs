@@ -9,7 +9,9 @@ class DeleteUserHttpAdapter {
     const router = new Router()
     router.delete("/users/:userId", async (ctx) => {
       try {
-        await this.deleteUserUseCase.execute(ctx.request.params.userId)
+        await this.deleteUserUseCase.execute({
+          userId: ctx.request.params.userId,
+        })
         ctx.status = 200
       } catch (e) {
         ctx.body = { message: e.message }

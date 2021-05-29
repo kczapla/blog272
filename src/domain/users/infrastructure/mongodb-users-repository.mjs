@@ -48,6 +48,12 @@ class MongoDBUsersRepository {
       salt: user.getSalt().getValue(),
     })
   }
+
+  async deleteById(userId) {
+    await this.usersCollection.deleteOne({
+      _id: userId,
+    })
+  }
 }
 
 export default MongoDBUsersRepository
