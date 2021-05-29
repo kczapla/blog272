@@ -42,7 +42,7 @@ paths:
     delete:
       description: Delete user account
       parameters:
-      - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/userId"
       tags:
         - users
       security:
