@@ -12,7 +12,9 @@ import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
 import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
+import DeleteUserHttpAdapter from "./domain/users/infrastructure/delete-user-http-adapter"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
+import DeleteUserUseCase from "./domain/users/use-cases/delete-user/delete-user-use-case"
 import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
 import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
 
@@ -58,6 +60,10 @@ async function main() {
     encriptionService
   )
   const usersRouter = new UsersHttpAdapter(createUserUserCase)
+
+  const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
+  const deleteUserHttpAdapter = new DeleteUserHttpAdapter(deleteUserUseCase)
+
   const jwtTokenService = new JWTTokenService(
     "3min",
     securityConfig.getJwtSecret()
@@ -75,6 +81,7 @@ async function main() {
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
+  versionZeroRouter.addRouter(deleteUserHttpAdapter)
   versionZeroRouter.addRouter(authRouter)
   const apiRouter = new RouterComposite("/api")
 

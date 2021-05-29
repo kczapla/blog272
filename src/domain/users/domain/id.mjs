@@ -14,6 +14,9 @@ class Id {
   }
 
   static create(id) {
+    if (typeof id !== "string") {
+      throw new UserError("Id value must be a string")
+    }
     if (id === null) {
       throw new UserError("Id value is null.")
     }
