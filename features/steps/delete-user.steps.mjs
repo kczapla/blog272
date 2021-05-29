@@ -33,4 +33,32 @@ defineFeature(feature, (test) => {
       expect(loginResponse.status).toEqual(400)
     })
   })
+  test("Unauthenticated user can't delete an account", ({
+    given,
+    when,
+    then,
+  }) => {
+    let bobsAccountId
+    given("Bob is not logged in", async () => {
+      const email = "unathenticatedbob@bob.com"
+      const password = "12345678ap67("
+      const createBobDto = makeCreateUserDTO("bob", email, password)
+      const createResponse = await createUser(createBobDto)
+      expect(createResponse.status).toEqual(201)
+
+      const loginResponse = await loginUser(makeLoginUserDTO(email, password))
+      expect(loginResponse.status).toEqual(201)
+
+      bobsAccountId = getUserIdFromJWTToken(loginResponse.data.token)
+    })
+
+    let deleteResponse
+    when("he tries to delete his account", async () => {
+      deleteResponse = await deleteUser(bobsAccountId, "")
+    })
+
+    then("the server rejescts his request and returns an error", () => {
+      expect(deleteResponse.status).toEqual(401)
+    })
+  })
 })

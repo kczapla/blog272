@@ -6,3 +6,8 @@ Feature: Delete user
         Given Bob is logged in
         When he deletes his account
         Then he can't login using his credentials
+
+    Scenario: Unauthenticated user can't delete an account
+        Given Bob is not logged in
+        When he tries to delete his account
+        Then the server rejescts his request and returns an error
