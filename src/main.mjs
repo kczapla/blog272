@@ -61,13 +61,17 @@ async function main() {
   )
   const usersRouter = new UsersHttpAdapter(createUserUserCase)
 
-  const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
-  const deleteUserHttpAdapter = new DeleteUserHttpAdapter(deleteUserUseCase)
-
   const jwtTokenService = new JWTTokenService(
     "3min",
     securityConfig.getJwtSecret()
   )
+
+  const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
+  const deleteUserHttpAdapter = new DeleteUserHttpAdapter(
+    deleteUserUseCase,
+    jwtTokenService
+  )
+
   const getAuthenticationTokenUseCase = new GetAuthenticationTokenUseCase(
     usersRepository,
     encriptionService,

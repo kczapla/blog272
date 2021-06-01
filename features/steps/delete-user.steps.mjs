@@ -54,7 +54,7 @@ defineFeature(feature, (test) => {
 
     let deleteResponse
     when("he tries to delete his account", async () => {
-      deleteResponse = await deleteUser(bobsAccountId, "")
+      deleteResponse = await deleteUser(bobsAccountId, "xxxx.yyyy.zzzz")
     })
 
     then("the server rejescts his request and returns an error", () => {
