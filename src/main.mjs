@@ -12,7 +12,6 @@ import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
 import UserResource from "./domain/users/resource/user-resource"
-import DeleteUserHttpAdapter from "./domain/users/infrastructure/delete-user-http-adapter"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
 import DeleteUserUseCase from "./domain/users/use-cases/delete-user/delete-user-use-case"
 import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
@@ -59,7 +58,6 @@ async function main() {
     usersRepository,
     encriptionService
   )
-  const usersRouter = new UserResource(createUserUserCase)
 
   const jwtTokenService = new JWTTokenService(
     "3min",
@@ -67,7 +65,9 @@ async function main() {
   )
 
   const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
-  const deleteUserHttpAdapter = new DeleteUserHttpAdapter(
+
+  const usersRouter = new UserResource(
+    createUserUserCase,
     deleteUserUseCase,
     jwtTokenService
   )
@@ -85,7 +85,6 @@ async function main() {
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
-  versionZeroRouter.addRouter(deleteUserHttpAdapter)
   versionZeroRouter.addRouter(authRouter)
   const apiRouter = new RouterComposite("/api")
 
