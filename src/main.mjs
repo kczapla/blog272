@@ -19,7 +19,6 @@ import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryp
 
 import GetAuthenticationTokenUseCase from "./domain/users/use-cases/get-authentication-token-use-case/get-authentication-token-use-case"
 import JWTTokenService from "./domain/users/infrastructure/jwt-token-service"
-import AuthenticationHttpAdapter from "./domain/users/infrastructure/authentication-http-adapter"
 
 async function main() {
   const openApiDocPath = path.join(
@@ -66,18 +65,15 @@ async function main() {
 
   const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
 
-  const usersRouter = new UserResource(
-    createUserUserCase,
-    deleteUserUseCase,
-    jwtTokenService
-  )
-
   const getAuthenticationTokenUseCase = new GetAuthenticationTokenUseCase(
     usersRepository,
     encriptionService,
     jwtTokenService
   )
-  const authRouter = new AuthenticationHttpAdapter(
+  const usersRouter = new UserResource(
+    createUserUserCase,
+    deleteUserUseCase,
+    jwtTokenService,
     getAuthenticationTokenUseCase
   )
 
@@ -85,7 +81,6 @@ async function main() {
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
-  versionZeroRouter.addRouter(authRouter)
   const apiRouter = new RouterComposite("/api")
 
   apiRouter.addRouter(versionZeroRouter)
