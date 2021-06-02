@@ -11,7 +11,7 @@ import { OpenApiDoc, ReadPost, CreatePost, DeletePost } from "./domain"
 import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
 
-import UsersHttpAdapter from "./domain/users/infrastructure/users-http-adapter"
+import UserResource from "./domain/users/resource/user-resource"
 import DeleteUserHttpAdapter from "./domain/users/infrastructure/delete-user-http-adapter"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
 import DeleteUserUseCase from "./domain/users/use-cases/delete-user/delete-user-use-case"
@@ -59,7 +59,7 @@ async function main() {
     usersRepository,
     encriptionService
   )
-  const usersRouter = new UsersHttpAdapter(createUserUserCase)
+  const usersRouter = new UserResource(createUserUserCase)
 
   const jwtTokenService = new JWTTokenService(
     "3min",
