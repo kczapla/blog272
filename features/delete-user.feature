@@ -11,3 +11,8 @@ Feature: Delete user
         Given Bob is not logged in
         When he tries to delete his account
         Then the server rejescts his request and returns an error
+
+    Scenario: Only owner can delete his account
+        Given Bob and Mark have an accounts on the blog
+        When Bob tries to delete Mark's account
+        Then the server rejects his request and returns an error
