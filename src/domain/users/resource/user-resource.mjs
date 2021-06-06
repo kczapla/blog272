@@ -9,17 +9,21 @@ import {
   InvalidUserCredentails,
 } from "../use-cases/get-authentication-token-use-case/get-authentication-token-use-case-errors"
 
+import { RBACAuthorizationService } from "../application/"
+
 class UserResource {
   constructor(
     createUserUseCase,
     deleteUserUseCase,
     tokenAuthenticationService,
-    loginUserUseCase
+    loginUserUseCase,
+    userRepository
   ) {
     this.createUserUseCase = createUserUseCase
     this.deleteUserUseCase = deleteUserUseCase
     this.tokenAuthenticationService = tokenAuthenticationService
     this.loginUserUseCase = loginUserUseCase
+    this.userRepository = userRepository
   }
 
   async loginUser(ctx) {
@@ -70,11 +74,29 @@ class UserResource {
 
     const jwtToken = authHeader.replace("Bearer ", "")
 
+    let token
     try {
-      this.tokenAuthenticationService.getUserFromToken(jwtToken)
+      token = this.tokenAuthenticationService.getUserFromToken(jwtToken)
     } catch (e) {
       ctx.status = 401
       ctx.body = { message: "Invalid token." }
+      return
+    }
+
+    const authorizationService = new RBACAuthorizationService(
+      token.id,
+      this.userRepository
+    )
+
+    const isAuthorized = authorizationService.can("delete-user", {
+      userId: ctx.request.params.userId,
+    })
+
+    if (!isAuthorized) {
+      ctx.status = 403
+      ctx.body = {
+        message: "User is not authorized to perform this operation",
+      }
       return
     }
 

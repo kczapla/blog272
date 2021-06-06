@@ -69,7 +69,6 @@ defineFeature(feature, (test) => {
       const bobsPassword = "1234567890Qw"
       const createBobDto = makeCreateUserDTO("bob", bobsEmail, bobsPassword)
       const createBobResponse = await createUser(createBobDto)
-      console.log(createBobResponse)
       expect(createBobResponse.status).toEqual(201)
 
       const bobsLoginResponse = await loginUser(

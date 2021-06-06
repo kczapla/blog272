@@ -70,11 +70,13 @@ async function main() {
     encriptionService,
     jwtTokenService
   )
+
   const usersRouter = new UserResource(
     createUserUserCase,
     deleteUserUseCase,
     jwtTokenService,
-    getAuthenticationTokenUseCase
+    getAuthenticationTokenUseCase,
+    usersRepository
   )
 
   const versionZeroRouter = new RouterComposite("/v0")
