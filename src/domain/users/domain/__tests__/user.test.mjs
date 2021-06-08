@@ -3,6 +3,7 @@ import Name from "../name"
 import Salt from "../salt"
 import Email from "../email"
 import EncryptedPassword from "../encrypted-password"
+import Role from "../role"
 import User from "../user"
 
 describe("User", () => {
@@ -13,8 +14,9 @@ describe("User", () => {
       const email = Email.create("bob@bob.com")
       const password = EncryptedPassword.create("encpasswd")
       const salt = Salt.create("salt")
+      const role = Role.create("role")
 
-      const user = User.create(id, name, email, password, salt)
+      const user = User.create(id, name, email, password, salt, role)
 
       expect(user.equals(user)).toBeTruthy()
     })
@@ -24,19 +26,30 @@ describe("User", () => {
       const bobemail = Email.create("bob@bob.com")
       const bobpassword = EncryptedPassword.create("encpasswd")
       const bobsalt = Salt.create("salt")
-      const bob = User.create(bobid, bobname, bobemail, bobpassword, bobsalt)
+      const bobrole = Role.create("role")
+      const bob = User.create(
+        bobid,
+        bobname,
+        bobemail,
+        bobpassword,
+        bobsalt,
+        bobrole
+      )
 
       const markid = Id.create("2222")
       const markname = Name.create("mark")
       const markemail = Email.create("mark@bob.com")
       const markpassword = EncryptedPassword.create("encpasswd")
       const marksalt = Salt.create("salt")
+      const markrole = Role.create("role")
+
       const mark = User.create(
         markid,
         markname,
         markemail,
         markpassword,
-        marksalt
+        marksalt,
+        markrole
       )
 
       expect(bob.equals(mark)).toBeFalsy()

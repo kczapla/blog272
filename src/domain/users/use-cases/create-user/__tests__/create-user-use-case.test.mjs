@@ -37,6 +37,7 @@ describe("create user use case", () => {
       email: { email: "bob@bob.com" },
       encryptedPassword: { hash: "hash" },
       salt: { salt: "salt" },
+      role: { role: "writer" },
     })
   })
   it("throws a UserAlredyExist when user already exists", async () => {

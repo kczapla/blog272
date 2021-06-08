@@ -7,6 +7,7 @@ import Salt from "../domain/salt"
 import User from "../domain/user"
 import Email from "../domain/email"
 import EncryptedPassword from "../domain/encrypted-password"
+import Role from "../domain/role.mjs"
 
 class MongoDBUsersRepository {
   constructor(dbClient) {
@@ -16,6 +17,23 @@ class MongoDBUsersRepository {
 
   nextIdentity() {
     return ObjectId().toString()
+  }
+
+  async findById(userId) {
+    const rawUser = await this.usersCollection.findOne({ _id: userId })
+
+    if (rawUser === null) {
+      return rawUser
+    }
+
+    const id = Id.create(rawUser._id)
+    const name = Name.create(rawUser.name)
+    const salt = Salt.create(rawUser.salt)
+    const email = Email.create(rawUser.email)
+    const encryptedPassword = EncryptedPassword.create(rawUser.password)
+    const role = Role.create(rawUser.role)
+
+    return User.create(id, name, email, encryptedPassword, salt, role)
   }
 
   async findByEmail(userEmail) {
@@ -30,8 +48,9 @@ class MongoDBUsersRepository {
     const salt = Salt.create(rawUser.salt)
     const email = Email.create(rawUser.email)
     const encryptedPassword = EncryptedPassword.create(rawUser.password)
+    const role = Role.create(rawUser.role)
 
-    return User.create(id, name, email, encryptedPassword, salt)
+    return User.create(id, name, email, encryptedPassword, salt, role)
   }
 
   async exists(userEmail) {
@@ -46,6 +65,7 @@ class MongoDBUsersRepository {
       email: user.getEmail().getValue(),
       password: user.getEncryptedPassword().getValue(),
       salt: user.getSalt().getValue(),
+      role: user.getRole().getValue(),
     })
   }
 

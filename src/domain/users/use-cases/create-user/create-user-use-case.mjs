@@ -5,6 +5,7 @@ import User from "../../domain/user"
 import Email from "../../domain/email"
 import Password from "../../domain/password"
 import EncryptedPassword from "../../domain/encrypted-password"
+import Role from "../../domain/role"
 import UserError from "../../domain/user-error"
 import { UserAlreadyExists, InvalidUserData } from "./create-user-errors"
 
@@ -46,13 +47,15 @@ class CreateUserUseCase {
     )
 
     const id = Id.create(this.userRepository.nextIdentity())
+    const role = Role.create("writer")
 
     const user = User.create(
       id,
       userName,
       userEmail,
       encryptedPassword,
-      passwordSalt
+      passwordSalt,
+      role
     )
 
     await this.userRepository.save(user)

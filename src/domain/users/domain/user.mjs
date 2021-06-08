@@ -1,12 +1,13 @@
 import UserError from "./user-error"
 
 class User {
-  constructor(id, name, email, encryptedPassword, salt) {
+  constructor(id, name, email, encryptedPassword, salt, role) {
     this.id = id
     this.name = name
     this.email = email
     this.encryptedPassword = encryptedPassword
     this.salt = salt
+    this.role = role
   }
 
   getId() {
@@ -29,6 +30,10 @@ class User {
     return this.salt
   }
 
+  getRole() {
+    return this.role
+  }
+
   equals(other) {
     let areValueObjTheSame = []
     areValueObjTheSame.push(this.getId().equals(other.getId()))
@@ -38,11 +43,12 @@ class User {
       this.getEncryptedPassword().equals(other.getEncryptedPassword())
     )
     areValueObjTheSame.push(this.getSalt().equals(other.getSalt()))
+    areValueObjTheSame.push(this.getRole().equals(other.getRole()))
 
     return areValueObjTheSame.every((isTheSame) => isTheSame)
   }
 
-  static create(id, name, email, encryptedPassword, salt) {
+  static create(id, name, email, encryptedPassword, salt, role) {
     if (id === null || id === undefined) {
       throw new UserError("User id is null/undefined")
     }
@@ -58,8 +64,11 @@ class User {
     if (salt === null || salt === undefined) {
       throw new UserError("User salt is null/undefined")
     }
+    if (role === null || role === undefined) {
+      throw new UserError("User role is null/undefined")
+    }
 
-    return new User(id, name, email, encryptedPassword, salt)
+    return new User(id, name, email, encryptedPassword, salt, role)
   }
 }
 

@@ -61,4 +61,42 @@ defineFeature(feature, (test) => {
       expect(deleteResponse.status).toEqual(401)
     })
   })
+  test("Only owner can delete his account", ({ given, when, then }) => {
+    let bobsToken
+    let marksAccountId
+    given("Bob and Mark have an accounts on the blog", async () => {
+      const bobsEmail = "unauthorizedbob@bob.com"
+      const bobsPassword = "1234567890Qw"
+      const createBobDto = makeCreateUserDTO("bob", bobsEmail, bobsPassword)
+      const createBobResponse = await createUser(createBobDto)
+      expect(createBobResponse.status).toEqual(201)
+
+      const bobsLoginResponse = await loginUser(
+        makeLoginUserDTO(bobsEmail, bobsPassword)
+      )
+      expect(bobsLoginResponse.status).toEqual(201)
+      bobsToken = bobsLoginResponse.data.token
+
+      const marksEmail = "unauthorizedmark@bob.com"
+      const marksPassword = "1234567890Qw"
+      const createMarkDto = makeCreateUserDTO("mark", marksEmail, marksPassword)
+      const createMarkResponse = await createUser(createMarkDto)
+      expect(createMarkResponse.status).toEqual(201)
+
+      const marksLoginResponse = await loginUser(
+        makeLoginUserDTO(marksEmail, marksPassword)
+      )
+      expect(marksLoginResponse.status).toEqual(201)
+      marksAccountId = getUserIdFromJWTToken(marksLoginResponse.data.token)
+    })
+
+    let deleteResponse
+    when("Bob tries to delete Mark's account", async () => {
+      deleteResponse = await deleteUser(marksAccountId, bobsToken)
+    })
+
+    then("the server rejects his request and returns an error", () => {
+      expect(deleteResponse.status).toEqual(403)
+    })
+  })
 })

@@ -41,7 +41,7 @@ export const loginUser = async (loginUserDTO) => {
 }
 
 export const deleteUser = async (userId, authToken) => {
-  const headers = { Authentication: `Bearer ${authToken}` }
+  const headers = { Authorization: `Bearer ${authToken}` }
   try {
     return await axios.delete(getUsersUrl() + `/${userId}`, {
       headers: headers,
