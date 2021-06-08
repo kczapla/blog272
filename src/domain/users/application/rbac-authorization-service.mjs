@@ -2,6 +2,13 @@ class RBACAuthorizationService {
   constructor(userId, userRepository) {
     this.userId = userId
     this.userRepository = userRepository
+
+    this.roles = {
+      writer: {
+        "user:delete": ({ requesterId, userId }) => requesterId === userId,
+        "post:create": () => true,
+      },
+    }
   }
 
   getUserId() {
@@ -13,14 +20,25 @@ class RBACAuthorizationService {
   }
 
   async can(action, params) {
-    const user = await this.getUserRepository().findUserById(this.getUserId())
-    const role = user.getRole()
+    const user = await this.getUserRepository().findById(this.getUserId())
 
-    if (params === undefined || params === null) {
-      return role.can(action)
+    if (user === null) {
+      return false
     }
 
-    return role.can(action)(params)
+    const roleName = user.getRole().getValue()
+
+    const role = this.roles[roleName]
+    if (role === undefined) {
+      return false
+    }
+
+    const roleAction = role[action]
+    if (roleAction === undefined) {
+      return false
+    }
+
+    return roleAction(params)
   }
 }
 

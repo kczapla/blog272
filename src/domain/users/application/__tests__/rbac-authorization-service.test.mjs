@@ -6,33 +6,45 @@ describe("rabc authorization service", () => {
   })
 
   const userRepositoryMock = {
-    findUserById: jest.fn(),
+    findById: jest.fn(),
   }
   const userMock = { getRole: jest.fn() }
-  const roleMock = { can: jest.fn() }
 
-  it("authorizes conditional actions", async () => {
-    roleMock.can.mockReturnValue(() => true)
-    userMock.getRole.mockReturnValue(roleMock)
-    userRepositoryMock.findUserById.mockReturnValue(userMock)
+  it("can returns false if user has unsupported role", async () => {
+    userMock.getRole.mockReturnValue({ getValue: () => "unsupported" })
+    userRepositoryMock.findById.mockReturnValue(userMock)
     const authorizationService = new RBACAuthorizationService(
       1,
       userRepositoryMock
     )
-    const isAuthorized = await authorizationService.can("delete-post", {
+    const isAuthorized = await authorizationService.can("delete:post", {
       userId: 1,
     })
-    expect(isAuthorized).toBeTruthy()
+    expect(isAuthorized).toBeFalsy()
   })
-  it("authorizes conditionless action", async () => {
-    roleMock.can.mockReturnValue(true)
-    userMock.getRole.mockReturnValue(roleMock)
-    userRepositoryMock.findUserById.mockReturnValue(userMock)
+  it("can returns true when user is authorized to perform a conditional action", async () => {
+    userMock.getRole.mockReturnValue({ getValue: () => "writer" })
+    userRepositoryMock.findById.mockReturnValue(userMock)
     const authorizationService = new RBACAuthorizationService(
       1,
       userRepositoryMock
     )
-    const isAutorized = await authorizationService.can("create-user")
-    expect(isAutorized).toBeTruthy()
+    const isAuthorized = await authorizationService.can("user:delete", {
+      requesterId: 1,
+      userId: 1,
+    })
+
+    expect(isAuthorized).toBeTruthy()
+  })
+  it("can returns true when user is authorized to perform an unconditional action", async () => {
+    userMock.getRole.mockReturnValue({ getValue: () => "writer" })
+    userRepositoryMock.findById.mockReturnValue(userMock)
+    const authorizationService = new RBACAuthorizationService(
+      1,
+      userRepositoryMock
+    )
+    const isAuthorized = await authorizationService.can("post:create")
+
+    expect(isAuthorized).toBeTruthy()
   })
 })

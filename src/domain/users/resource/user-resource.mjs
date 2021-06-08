@@ -60,7 +60,7 @@ class UserResource {
   }
 
   async deleteUser(ctx) {
-    const authHeader = ctx.request.headers["authentication"]
+    const authHeader = ctx.request.headers["authorization"]
     if (authHeader === null || authHeader === undefined) {
       ctx.status = 400
       ctx.body = { message: "JWT token is missing." }
@@ -88,7 +88,8 @@ class UserResource {
       this.userRepository
     )
 
-    const isAuthorized = authorizationService.can("delete-user", {
+    const isAuthorized = await authorizationService.can("user:delete", {
+      requesterId: token.id,
       userId: ctx.request.params.userId,
     })
 
