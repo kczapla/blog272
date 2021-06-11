@@ -2,7 +2,7 @@ export const makeDefaultCreatePostRequestBody = () => {
   return {
     title: "test title",
     author: {
-      id: 1,
+      id: "axcde123asdf",
       name: "Bob",
     },
     categories: [],

@@ -8,15 +8,9 @@ const postResponseSchema = {
     title: {
       type: "string",
     },
-    publishing_date: {
+    publishingDate: {
       type: "string",
       format: "date-time",
-    },
-    categories: {
-      type: "array",
-      items: {
-        type: "string",
-      },
     },
     tags: {
       type: "array",
@@ -28,7 +22,7 @@ const postResponseSchema = {
       type: "string",
     },
   },
-  required: ["id", "title", "publishing_date", "categories", "tags", "content"],
+  required: ["id", "title", "publishingDate", "tags", "content"],
 }
 
 export default postResponseSchema
