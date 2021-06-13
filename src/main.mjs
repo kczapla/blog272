@@ -7,9 +7,16 @@ import { appConfig, mongoDbConfig, securityConfig } from "./config"
 import { DocsRouter, PostsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
 import { DocsController, PostsController } from "./controllers"
-import { OpenApiDoc, ReadPost, CreatePost, DeletePost } from "./domain"
+import { OpenApiDoc, ReadPost, DeletePost } from "./domain"
 import { PostsService } from "./services"
 import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
+
+import { BlogResource } from "./domain/blog/resource"
+import {
+  MongoPostRepository,
+  MongoPostView,
+} from "./domain/blog/infrastructure"
+import { CreatePostService, ReadPostService } from "./domain/blog/application"
 
 import UserResource from "./domain/users/resource/user-resource"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
@@ -43,12 +50,17 @@ async function main() {
 
   const db = client.db(mongoDbConfig.getMongoDbName())
 
-  const postsRepository = new MongoPostsRepository(db.collection("posts"))
+  const yetAnotherPostRepository = new MongoPostRepository(db)
+  const postView = new MongoPostView(db)
+  const readPostService = new ReadPostService(postView)
+  const createPostService = new CreatePostService(yetAnotherPostRepository)
+  const blogResource = new BlogResource(createPostService, readPostService)
+
+  const postsRepository = new MongoPostsRepository(db.collection("blog"))
   const postsService = new PostsService(postsRepository)
   const posts = new ReadPost(postsService)
-  const createPosts = new CreatePost(postsService)
   const deletePost = new DeletePost(postsService)
-  const postsController = new PostsController(posts, createPosts, deletePost)
+  const postsController = new PostsController(posts, deletePost)
   const postsRouter = new PostsRouter(postsController)
 
   const usersRepository = new MongoDBUsersRepository(db)
@@ -83,6 +95,7 @@ async function main() {
   versionZeroRouter.addRouter(docsRouter)
   versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
+  versionZeroRouter.addRouter(blogResource)
   const apiRouter = new RouterComposite("/api")
 
   apiRouter.addRouter(versionZeroRouter)

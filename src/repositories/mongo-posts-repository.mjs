@@ -8,8 +8,10 @@ class MongoPostsRepository {
 
   async read(id) {
     let post
+    console.log("posts repo id " + id)
     try {
       post = await this.postsCollection.findOne({ _id: new ObjectId(id) })
+      console.log("posts repo " + JSON.stringify(post))
     } catch (error) {
       console.log(error)
       return {}
@@ -19,7 +21,6 @@ class MongoPostsRepository {
       return {}
     }
 
-    post.publishing_date = ObjectId(post._id).getTimestamp()
     post.id = post._id
     delete post._id
     return post
@@ -38,7 +39,6 @@ class MongoPostsRepository {
     try {
       const post = await this.postsCollection.insertOne(data)
       let insertedPost = post.ops[0]
-      insertedPost.publishing_date = ObjectId(insertedPost._id).getTimestamp()
       insertedPost.id = insertedPost._id
       delete insertedPost._id
       return insertedPost

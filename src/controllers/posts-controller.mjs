@@ -8,9 +8,8 @@ import {
 import { CreatePostRequestBody } from "../domain"
 
 class PostsController {
-  constructor(readPost, createPost, deletePost) {
+  constructor(readPost, deletePost) {
     this.readPost = readPost
-    this.createPost = createPost
     this.deletePost = deletePost
   }
 

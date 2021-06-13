@@ -1,6 +1,6 @@
 import PostsController from "../posts-controller"
 
-import { createContext, createResponseBody } from "./posts.utils"
+import { createContext } from "./posts.utils"
 
 describe("PostsController", () => {
   it("read returns 404", async () => {
@@ -44,19 +44,6 @@ describe("PostsController", () => {
     }
     await postsController.read(context)
     expect(context.response.status).toEqual(200)
-  })
-  it("create returns post in context body", async () => {
-    const createPost = {
-      create: async () => {
-        return createResponseBody()
-      },
-    }
-    const postsController = new PostsController({}, createPost)
-    const context = createContext()
-
-    await postsController.create(context, async () => {})
-
-    expect(context.response.body).toMatchObject(createResponseBody())
   })
 })
 
@@ -112,22 +99,5 @@ describe("PostController delete", () => {
     await postController.delete(context)
 
     expect(context.response.status).toEqual(400)
-  })
-  it("returns 200 if given post was deleted", async () => {
-    const readPost = {
-      read: async () => {
-        return { id: 1 }
-      },
-    }
-    const deletePost = {
-      delete: async () => {},
-    }
-
-    const postController = new PostsController(readPost, {}, deletePost)
-
-    const context = createContext()
-    await postController.delete(context)
-
-    expect(context.response.status).toEqual(204)
   })
 })
