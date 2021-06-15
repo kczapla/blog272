@@ -27,7 +27,7 @@ defineFeature(feature, (test) => {
   test("Delete non-existent post", ({ when, then }) => {
     let response
     when("Bob reads non-existent post", async () => {
-      response = await deletePost("0")
+      response = await deletePost("a".repeat(24))
     })
     then("server should inform that it did not find a resource", () => {
       expect(response.status).toEqual(404)

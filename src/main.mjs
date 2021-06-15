@@ -4,19 +4,22 @@ import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
 import { appConfig, mongoDbConfig, securityConfig } from "./config"
-import { DocsRouter, PostsRouter, RouterComposite } from "./api"
+import { DocsRouter, RouterComposite } from "./api"
 import { WebApp } from "./app"
-import { DocsController, PostsController } from "./controllers"
-import { OpenApiDoc, ReadPost, DeletePost } from "./domain"
-import { PostsService } from "./services"
-import { OpenApiYamlFileRepository, MongoPostsRepository } from "./repositories"
+import { DocsController } from "./controllers"
+import { OpenApiDoc } from "./domain"
+import { OpenApiYamlFileRepository } from "./repositories"
 
 import { BlogResource } from "./domain/blog/resource"
 import {
   MongoPostRepository,
   MongoPostView,
 } from "./domain/blog/infrastructure"
-import { CreatePostService, ReadPostService } from "./domain/blog/application"
+import {
+  CreatePostService,
+  DeletePostService,
+  ReadPostService,
+} from "./domain/blog/application"
 
 import UserResource from "./domain/users/resource/user-resource"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
@@ -54,14 +57,12 @@ async function main() {
   const postView = new MongoPostView(db)
   const readPostService = new ReadPostService(postView)
   const createPostService = new CreatePostService(yetAnotherPostRepository)
-  const blogResource = new BlogResource(createPostService, readPostService)
-
-  const postsRepository = new MongoPostsRepository(db.collection("blog"))
-  const postsService = new PostsService(postsRepository)
-  const posts = new ReadPost(postsService)
-  const deletePost = new DeletePost(postsService)
-  const postsController = new PostsController(posts, deletePost)
-  const postsRouter = new PostsRouter(postsController)
+  const deletePostService = new DeletePostService(yetAnotherPostRepository)
+  const blogResource = new BlogResource(
+    createPostService,
+    deletePostService,
+    readPostService
+  )
 
   const usersRepository = new MongoDBUsersRepository(db)
   const encriptionService = new CryptoEncriptionService(10, 64)
@@ -93,7 +94,6 @@ async function main() {
 
   const versionZeroRouter = new RouterComposite("/v0")
   versionZeroRouter.addRouter(docsRouter)
-  versionZeroRouter.addRouter(postsRouter)
   versionZeroRouter.addRouter(usersRouter)
   versionZeroRouter.addRouter(blogResource)
   const apiRouter = new RouterComposite("/api")
