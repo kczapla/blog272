@@ -11,6 +11,19 @@ class MongoPostRepository {
     return ObjectId().toString()
   }
 
+  async exists(postId) {
+    const post = await this.blogCollection.findOne({
+      _id: new ObjectId(postId.getValue()),
+    })
+    return post !== null
+  }
+
+  async delete(postId) {
+    await this.blogCollection.deleteOne({
+      _id: new ObjectId(postId.getValue()),
+    })
+  }
+
   async save(post) {
     const tags = Array.from(post.getTags(), (tag) => tag.getValue())
     await this.blogCollection.insertOne({
