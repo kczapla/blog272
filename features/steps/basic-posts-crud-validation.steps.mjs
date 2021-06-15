@@ -12,7 +12,7 @@ defineFeature(feature, (test) => {
   test("Read non-existent post", ({ when, then }) => {
     let response
     when("Bob reads non-existent post", async () => {
-      response = await readPost("0")
+      response = await readPost("d4d4d4d4d4d4d4d4d4d4d4d4")
     })
 
     then(
