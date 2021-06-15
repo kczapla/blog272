@@ -25,10 +25,30 @@ class BlogResource {
     }
   }
 
+  async readPost(ctx) {
+    const postId = ctx.request.params.postId
+    try {
+      ctx.body = await this.readPostService.read({ postId: postId })
+      ctx.status = 200
+    } catch (e) {
+      ctx.body = { message: e.message, code: 1 }
+      if (e instanceof blogApplicationErrors.PostNotFound) {
+        ctx.status = 404
+      } else if (e instanceof blogApplicationErrors.InvalidPostData) {
+        ctx.status = 400
+      } else {
+        ctx.status = 500
+      }
+    }
+  }
+
   getRoutes() {
     const router = new Router()
     router.post("/posts", async (ctx) => {
       await this.createPost(ctx)
+    })
+    router.get("/posts/:postId", async (ctx) => {
+      await this.readPost(ctx)
     })
 
     return router.routes()

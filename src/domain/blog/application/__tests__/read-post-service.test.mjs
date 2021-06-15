@@ -26,3 +26,24 @@ describe("ReadPostService findByTitle", () => {
     )
   })
 })
+
+describe("ReadPostService read", () => {
+  const postView = {
+    findById: jest.fn(),
+  }
+  it("returns post view", async () => {
+    const post = { id: 1, title: "test" }
+    postView.findById.mockReturnValue([post])
+    const readPostService = new ReadPostService(postView)
+    await expect(readPostService.read({ postId: "1000" })).resolves.toEqual(
+      post
+    )
+  })
+  it("throws if post does not exist", async () => {
+    postView.findById.mockReturnValue([])
+    const readPostService = new ReadPostService(postView)
+    await expect(readPostService.read({ postId: "1234" })).rejects.toThrow(
+      blogErrors.PostNotFound
+    )
+  })
+})
