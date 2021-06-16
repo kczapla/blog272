@@ -4,11 +4,11 @@ import mongodb from "mongodb"
 const { MongoClient } = mongodb
 
 import { appConfig, mongoDbConfig, securityConfig } from "./config"
-import { DocsRouter, RouterComposite } from "./api"
-import { WebApp } from "./app"
-import { DocsController } from "./controllers"
-import { OpenApiDoc } from "./domain"
-import { OpenApiYamlFileRepository } from "./repositories"
+import { WebApp, RouterComposite } from "./app"
+
+import { YamlDocsRepository } from "./domain/docs/infrastructure"
+import { ReadDocsService } from "./domain/docs/application"
+import { DocsResource } from "./domain/docs/resource"
 
 import { BlogResource } from "./domain/blog/resource"
 import {
@@ -35,12 +35,9 @@ async function main() {
     path.dirname(""),
     "/docs/api/v0/openapi.yaml"
   )
-  const docsService = new OpenApiYamlFileRepository(openApiDocPath)
-  const docs = new OpenApiDoc(docsService)
-
-  const docsController = new DocsController(docs)
-  const url = `${appConfig.getUrl()}/api/v0/docs`
-  const docsRouter = new DocsRouter(docsController, url)
+  const docsRepository = new YamlDocsRepository(openApiDocPath)
+  const readDocsService = new ReadDocsService(docsRepository)
+  const docsResource = new DocsResource(readDocsService)
 
   const client = new MongoClient(
     mongoDbConfig.getUri(),
@@ -93,7 +90,7 @@ async function main() {
   )
 
   const versionZeroRouter = new RouterComposite("/v0")
-  versionZeroRouter.addRouter(docsRouter)
+  versionZeroRouter.addRouter(docsResource)
   versionZeroRouter.addRouter(usersRouter)
   versionZeroRouter.addRouter(blogResource)
   const apiRouter = new RouterComposite("/api")
