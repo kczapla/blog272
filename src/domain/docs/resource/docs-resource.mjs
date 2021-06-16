@@ -1,7 +1,4 @@
 import Router from "koa-router"
-import koa2SwaggerUi from "koa2-swagger-ui"
-
-const { koaSwagger } = koa2SwaggerUi
 
 class DocsResource {
   constructor(readDocsService) {
