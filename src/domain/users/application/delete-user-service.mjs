@@ -1,4 +1,5 @@
-import { Id, UserError } from "../domain"
+import { Id } from "../../core/domain"
+import { CoreDomainError } from "../../core/domain"
 import { InvalidUserId } from "./errors"
 
 class DeleteUserService {
@@ -13,7 +14,7 @@ class DeleteUserService {
     try {
       id = Id.create(userId)
     } catch (e) {
-      if (e instanceof UserError) {
+      if (e instanceof CoreDomainError) {
         throw new InvalidUserId(e.message)
       }
       throw e
