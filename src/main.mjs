@@ -5,11 +5,9 @@ const { MongoClient } = mongodb
 
 import { appConfig, mongoDbConfig, securityConfig } from "./config"
 import { WebApp, RouterComposite } from "./app"
-
 import { YamlDocsRepository } from "./domain/docs/infrastructure"
 import { ReadDocsService } from "./domain/docs/application"
 import { DocsResource } from "./domain/docs/resource"
-
 import { BlogResource } from "./domain/blog/resource"
 import {
   MongoPostRepository,
@@ -20,13 +18,12 @@ import {
   DeletePostService,
   ReadPostService,
 } from "./domain/blog/application"
-
-import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
-import DeleteUserUseCase from "./domain/users/use-cases/delete-user/delete-user-use-case"
-import GetAuthenticationTokenUseCase from "./domain/users/use-cases/get-authentication-token-use-case/get-authentication-token-use-case"
-
+import {
+  CreateUserService,
+  DeleteUserService,
+  GetAuthenticationTokenService,
+} from "./domain/users/application"
 import { UserResource } from "./domain/users/resource"
-
 import {
   CryptoEncriptionService,
   MongoDBUsersRepository,
@@ -66,7 +63,7 @@ async function main() {
 
   const usersRepository = new MongoDBUsersRepository(db)
   const encriptionService = new CryptoEncriptionService(10, 64)
-  const createUserUserCase = new CreateUserUseCase(
+  const createUserUserCase = new CreateUserService(
     usersRepository,
     encriptionService
   )
@@ -76,9 +73,9 @@ async function main() {
     securityConfig.getJwtSecret()
   )
 
-  const deleteUserUseCase = new DeleteUserUseCase(usersRepository)
+  const deleteUserUseCase = new DeleteUserService(usersRepository)
 
-  const getAuthenticationTokenUseCase = new GetAuthenticationTokenUseCase(
+  const getAuthenticationTokenUseCase = new GetAuthenticationTokenService(
     usersRepository,
     encriptionService,
     jwtTokenService

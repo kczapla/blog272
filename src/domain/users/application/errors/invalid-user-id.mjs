@@ -3,3 +3,5 @@ export class InvalidUserId extends Error {
     super(message)
   }
 }
+
+export default InvalidUserId

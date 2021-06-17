@@ -1,15 +1,11 @@
 import Router from "koa-router"
+import { RBACAuthorizationService } from "../application/"
 import {
   UserAlreadyExists,
   InvalidUserData,
-} from "../use-cases/create-user/create-user-errors"
-
-import {
   UserUnauthorized,
   InvalidUserCredentails,
-} from "../use-cases/get-authentication-token-use-case/get-authentication-token-use-case-errors"
-
-import { RBACAuthorizationService } from "../application/"
+} from "../application/errors"
 
 class UserResource {
   constructor(

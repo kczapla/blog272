@@ -1,5 +1,5 @@
-import CreateUserUseCase from "../create-user-use-case"
-import { UserAlreadyExists, InvalidUserData } from "../create-user-errors"
+import CreateUserService from "../create-user-service"
+import { UserAlreadyExists, InvalidUserData } from "../errors"
 
 describe("create user use case", () => {
   afterEach(() => {
@@ -25,11 +25,11 @@ describe("create user use case", () => {
     encryptionService.hash.mockReturnValue("hash")
     encryptionService.generateSalt.mockReturnValue("salt")
 
-    const createUserUseCase = new CreateUserUseCase(
+    const createUserService = new CreateUserService(
       userRepositoryMock,
       encryptionService
     )
-    await createUserUseCase.execute(createUserDTO)
+    await createUserService.execute(createUserDTO)
 
     expect(userRepositoryMock.save).toBeCalledWith({
       id: { id: "1111" },
@@ -48,12 +48,12 @@ describe("create user use case", () => {
     }
 
     userRepositoryMock.exists.mockReturnValue(true)
-    const createUserUseCase = new CreateUserUseCase(
+    const createUserService = new CreateUserService(
       userRepositoryMock,
       encryptionService
     )
 
-    await expect(createUserUseCase.execute(createUserDTO)).rejects.toThrow(
+    await expect(createUserService.execute(createUserDTO)).rejects.toThrow(
       UserAlreadyExists
     )
   })
@@ -63,12 +63,12 @@ describe("create user use case", () => {
       email: "bob",
       password: "bobpassword",
     }
-    const createUserUseCase = new CreateUserUseCase(
+    const createUserService = new CreateUserService(
       userRepositoryMock,
       encryptionService
     )
 
-    await expect(createUserUseCase.execute(createUserDTO)).rejects.toThrow(
+    await expect(createUserService.execute(createUserDTO)).rejects.toThrow(
       InvalidUserData
     )
   })
@@ -82,12 +82,12 @@ describe("create user use case", () => {
     encryptionService.hash.mockReturnValue("hashed")
     encryptionService.generateSalt.mockReturnValue("salt")
 
-    const createUserUseCase = new CreateUserUseCase(
+    const createUserService = new CreateUserService(
       userRepositoryMock,
       encryptionService
     )
 
-    await createUserUseCase.execute(createUserDTO)
+    await createUserService.execute(createUserDTO)
 
     expect(userRepositoryMock.save).toBeCalledWith(
       expect.objectContaining({

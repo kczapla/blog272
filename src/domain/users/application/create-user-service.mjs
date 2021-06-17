@@ -8,10 +8,10 @@ import {
   EncryptedPassword,
   Role,
   UserError,
-} from "../../domain"
-import { UserAlreadyExists, InvalidUserData } from "./create-user-errors"
+} from "../domain"
+import { UserAlreadyExists, InvalidUserData } from "./errors"
 
-class CreateUserUseCase {
+class CreateUserService {
   constructor(userRepository, encryptionService) {
     this.userRepository = userRepository
     this.encryptionService = encryptionService
@@ -64,4 +64,4 @@ class CreateUserUseCase {
   }
 }
 
-export default CreateUserUseCase
+export default CreateUserService

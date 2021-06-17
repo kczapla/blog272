@@ -1,10 +1,7 @@
-import { Email, Password, UserError } from "../../domain"
-import {
-  InvalidUserCredentails,
-  UserUnauthorized,
-} from "./get-authentication-token-use-case-errors"
+import { Email, Password, UserError } from "../domain"
+import { InvalidUserCredentails, UserUnauthorized } from "./errors"
 
-class GetAuthenticationTokenUseCase {
+class GetAuthenticationTokenService {
   constructor(userRepository, encryptionService, authTokenService) {
     this.userRepository = userRepository
     this.encryptionService = encryptionService
@@ -42,4 +39,4 @@ class GetAuthenticationTokenUseCase {
   }
 }
 
-export default GetAuthenticationTokenUseCase
+export default GetAuthenticationTokenService
