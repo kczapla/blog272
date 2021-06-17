@@ -1,5 +1,5 @@
-import DeleteUserUseCase from "../delete-user-use-case"
-import { InvalidUserId } from "../delete-user-errors.mjs"
+import DeleteUserService from "../delete-user-service"
+import { InvalidUserId } from "../errors"
 
 describe("delete user use case", () => {
   beforeEach(() => {
@@ -11,18 +11,18 @@ describe("delete user use case", () => {
   }
 
   it("deletes user", async () => {
-    const deleteUserUseCase = new DeleteUserUseCase(userRepositoryMock)
-    await deleteUserUseCase.execute({ userId: "1" })
+    const deleteUserService = new DeleteUserService(userRepositoryMock)
+    await deleteUserService.execute({ userId: "1" })
 
     expect(userRepositoryMock.deleteById).toHaveBeenCalledWith("1")
   })
   it.each([null, undefined, 1, ""])(
     "throws when user id is invalid",
     async (invalidId) => {
-      const deleteUserUseCase = new DeleteUserUseCase(userRepositoryMock)
+      const deleteUserService = new DeleteUserService(userRepositoryMock)
 
       const deleteUserDto = { userId: invalidId }
-      await expect(deleteUserUseCase.execute(deleteUserDto)).rejects.toThrow(
+      await expect(deleteUserService.execute(deleteUserDto)).rejects.toThrow(
         InvalidUserId
       )
     }

@@ -1,7 +1,7 @@
-import { Id, UserError } from "../../domain"
-import { InvalidUserId } from "./delete-user-errors.mjs"
+import { Id, UserError } from "../domain"
+import { InvalidUserId } from "./errors"
 
-class DeleteUserUseCase {
+class DeleteUserService {
   constructor(userRepository) {
     this.userRepository = userRepository
   }
@@ -22,4 +22,4 @@ class DeleteUserUseCase {
   }
 }
 
-export default DeleteUserUseCase
+export default DeleteUserService

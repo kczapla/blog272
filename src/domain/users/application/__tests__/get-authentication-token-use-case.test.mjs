@@ -1,8 +1,5 @@
-import GetAuthenticationTokenUseCase from "../get-authentication-token-use-case"
-import {
-  InvalidUserCredentails,
-  UserUnauthorized,
-} from "../get-authentication-token-use-case-errors"
+import GetAuthenticationTokenService from "../get-authentication-token-service"
+import { InvalidUserCredentails, UserUnauthorized } from "../errors"
 
 const createGetAuthenticationTokenDTO = () => {
   return {
@@ -11,12 +8,12 @@ const createGetAuthenticationTokenDTO = () => {
   }
 }
 
-const createGetAuthenticationTokenUseCase = (
+const createGetAuthenticationTokenService = (
   userRepository,
   encryptionService,
   authTokenService
 ) => {
-  return new GetAuthenticationTokenUseCase(
+  return new GetAuthenticationTokenService(
     userRepository,
     encryptionService,
     authTokenService
@@ -64,7 +61,7 @@ describe("login user use case", () => {
   })
   it("returns authentication token", async () => {
     encryptionService.hash.mockReturnValue("abc")
-    const useCase = createGetAuthenticationTokenUseCase(
+    const useCase = createGetAuthenticationTokenService(
       userRepository,
       encryptionService,
       authTokenService
@@ -79,13 +76,13 @@ describe("login user use case", () => {
   it("throws an error if user does not exist", () => {
     const getAuthenticationTokenDTO = createGetAuthenticationTokenDTO()
     userRepository.findByEmail.mockReturnValue(null)
-    const useCase = createGetAuthenticationTokenUseCase(
+    const service = createGetAuthenticationTokenService(
       userRepository,
       encryptionService,
       authTokenService
     )
 
-    expect(useCase.execute(getAuthenticationTokenDTO)).rejects.toThrow(
+    expect(service.execute(getAuthenticationTokenDTO)).rejects.toThrow(
       InvalidUserCredentails
     )
   })
@@ -93,13 +90,13 @@ describe("login user use case", () => {
     encryptionService.hash.mockReturnValue("eee")
     const getAuthenticationTokenDTO = createGetAuthenticationTokenDTO()
     userRepository.findByEmail.mockReturnValue(createUserStub())
-    const useCase = createGetAuthenticationTokenUseCase(
+    const service = createGetAuthenticationTokenService(
       userRepository,
       encryptionService,
       authTokenService
     )
 
-    expect(useCase.execute(getAuthenticationTokenDTO)).rejects.toThrow(
+    expect(service.execute(getAuthenticationTokenDTO)).rejects.toThrow(
       UserUnauthorized
     )
   })
