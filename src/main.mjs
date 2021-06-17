@@ -24,6 +24,7 @@ import {
   GetAuthenticationTokenService,
 } from "./domain/users/application"
 import { UserResource } from "./domain/users/resource"
+import { JWTAuthenticationMiddleware } from "./domain/users/middleware"
 import {
   CryptoEncriptionService,
   MongoDBUsersRepository,
@@ -73,6 +74,10 @@ async function main() {
     securityConfig.getJwtSecret()
   )
 
+  const jwtAuthenticationMiddleware = new JWTAuthenticationMiddleware(
+    jwtTokenService
+  )
+
   const deleteUserUseCase = new DeleteUserService(usersRepository)
 
   const getAuthenticationTokenUseCase = new GetAuthenticationTokenService(
@@ -86,7 +91,8 @@ async function main() {
     deleteUserUseCase,
     jwtTokenService,
     getAuthenticationTokenUseCase,
-    usersRepository
+    usersRepository,
+    jwtAuthenticationMiddleware
   )
 
   const versionZeroRouter = new RouterComposite("/v0")

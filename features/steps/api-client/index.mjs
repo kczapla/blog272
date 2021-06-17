@@ -2,8 +2,11 @@ import axios from "axios"
 
 import { getLoginUrl, getPostsUrl, getUsersUrl } from "../config"
 
-export const createPost = async (postRequestBody) => {
-  const createPostResponse = await axios.post(getPostsUrl(), postRequestBody)
+export const createPost = async (postRequestBody, authToken) => {
+  const headers = { Authorization: `Bearer ${authToken}` }
+  const createPostResponse = await axios.post(getPostsUrl(), postRequestBody, {
+    headers: headers,
+  })
 
   return { status: createPostResponse.status, data: createPostResponse.data }
 }
