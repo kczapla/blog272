@@ -1,7 +1,8 @@
 import bson from "bson"
 const { ObjectId } = bson
 
-import { Id, Name, Salt, User, Email, EncryptedPassword, Role } from "../domain"
+import { Id } from "../../core/domain"
+import { Name, Salt, User, Email, EncryptedPassword, Role } from "../domain"
 
 class MongoDBUsersRepository {
   constructor(dbClient) {

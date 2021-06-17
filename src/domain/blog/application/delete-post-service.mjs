@@ -1,5 +1,5 @@
-import Id from "../../users/domain/id"
-import UserError from "../../users/domain/user-error"
+import { Id } from "../../core/domain"
+import { CoreDomainError } from "../../core/domain"
 import blogAppError from "./blog-application-errors"
 
 class DeletePostService {
@@ -12,7 +12,7 @@ class DeletePostService {
     try {
       id = Id.create(postId)
     } catch (e) {
-      if (e instanceof UserError) {
+      if (e instanceof CoreDomainError) {
         const errorMessage = `Given post id(${postId}) is invalid due to: ${e.message}.`
         throw new blogAppError.InvalidPostData(errorMessage)
       }

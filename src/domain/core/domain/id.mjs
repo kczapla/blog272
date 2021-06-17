@@ -1,4 +1,4 @@
-import UserError from "./user-error"
+import CoreDomainError from "./core-domain-error"
 
 class Id {
   constructor(id) {
@@ -15,16 +15,16 @@ class Id {
 
   static create(id) {
     if (typeof id !== "string") {
-      throw new UserError("Id value must be a string")
+      throw new CoreDomainError("Id value must be a string")
     }
     if (id === null) {
-      throw new UserError("Id value is null.")
+      throw new CoreDomainError("Id value is null.")
     }
     if (id === undefined) {
-      throw new UserError("Id value is undefined.")
+      throw new CoreDomainError("Id value is undefined.")
     }
     if (id === "") {
-      throw new UserError("Id is empty.")
+      throw new CoreDomainError("Id is empty.")
     }
     return new Id(id)
   }

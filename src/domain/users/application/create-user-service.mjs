@@ -1,5 +1,6 @@
+import { Id } from "../../core/domain"
+
 import {
-  Id,
   Name,
   Salt,
   User,

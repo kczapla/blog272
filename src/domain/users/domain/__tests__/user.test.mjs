@@ -1,4 +1,4 @@
-import Id from "../id"
+import { Id } from "../../../core/domain"
 import Name from "../name"
 import Salt from "../salt"
 import Email from "../email"

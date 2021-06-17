@@ -1,10 +1,10 @@
 import Id from "../id"
-import UserError from "../user-error"
+import CoreDomainError from "../core-domain-error"
 
 describe("user id", () => {
   describe("create function", () => {
     it.each([null, undefined, ""])("throws an error if id is invalid", (id) => {
-      expect(() => Id.create(id)).toThrow(UserError)
+      expect(() => Id.create(id)).toThrow(CoreDomainError)
     })
   })
   describe("equals function", () => {
