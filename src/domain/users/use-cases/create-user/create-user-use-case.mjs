@@ -1,12 +1,14 @@
-import Id from "../../domain/id"
-import Name from "../../domain/name"
-import Salt from "../../domain/salt"
-import User from "../../domain/user"
-import Email from "../../domain/email"
-import Password from "../../domain/password"
-import EncryptedPassword from "../../domain/encrypted-password"
-import Role from "../../domain/role"
-import UserError from "../../domain/user-error"
+import {
+  Id,
+  Name,
+  Salt,
+  User,
+  Email,
+  Password,
+  EncryptedPassword,
+  Role,
+  UserError,
+} from "../../domain"
 import { UserAlreadyExists, InvalidUserData } from "./create-user-errors"
 
 class CreateUserUseCase {

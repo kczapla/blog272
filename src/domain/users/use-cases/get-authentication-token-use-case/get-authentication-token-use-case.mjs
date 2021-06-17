@@ -1,6 +1,4 @@
-import Email from "../../domain/email.mjs"
-import Password from "../../domain/password.mjs"
-import UserError from "../../domain/user-error"
+import { Email, Password, UserError } from "../../domain"
 import {
   InvalidUserCredentails,
   UserUnauthorized,

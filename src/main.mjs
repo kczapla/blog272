@@ -21,14 +21,17 @@ import {
   ReadPostService,
 } from "./domain/blog/application"
 
-import UserResource from "./domain/users/resource/user-resource"
 import CreateUserUseCase from "./domain/users/use-cases/create-user/create-user-use-case"
 import DeleteUserUseCase from "./domain/users/use-cases/delete-user/delete-user-use-case"
-import MongoDBUsersRepository from "./domain/users/infrastructure/mongodb-users-repository"
-import CryptoEncriptionService from "./domain/users/infrastructure/crypto-encryption-service"
-
 import GetAuthenticationTokenUseCase from "./domain/users/use-cases/get-authentication-token-use-case/get-authentication-token-use-case"
-import JWTTokenService from "./domain/users/infrastructure/jwt-token-service"
+
+import { UserResource } from "./domain/users/resource"
+
+import {
+  CryptoEncriptionService,
+  MongoDBUsersRepository,
+  JWTTokenService,
+} from "./domain/users/infrastructure"
 
 async function main() {
   const openApiDocPath = path.join(
