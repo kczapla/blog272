@@ -1,5 +1,4 @@
-import Id from "../../domain/id"
-import UserError from "../../domain/user-error"
+import { Id, UserError } from "../../domain"
 import { InvalidUserId } from "./delete-user-errors.mjs"
 
 class DeleteUserUseCase {
