@@ -1,22 +1,20 @@
 import { defineFeature, loadFeature } from "jest-cucumber"
-import { matchers } from "jest-json-schema"
 
-import { readPost, createPost, createUser, loginUser } from "./api-client"
 import { makeDefaultCreatePostRequestBody } from "./request-bodies"
-import { postResponseSchema } from "./response-schemas"
+import { createPost, deletePost, createUser, loginUser } from "./api-client"
+import { readPost } from "./api-client/index.mjs"
 
-expect.extend(matchers)
-
-const feature = loadFeature("./features/create-post.feature")
+const feature = loadFeature("./features/delete-post.feature")
 
 defineFeature(feature, (test) => {
-  test("Create post", ({ given, when, then }) => {
+  test("Delete published post", ({ given, when, then }) => {
     let token
+    let postId
     given("Bob is logged in", async () => {
-      const email = "createpostbob@gmail.com"
-      const password = "createpostbob1"
+      const email = "deletepostbob@gmail.com"
+      const password = "deletepostbob1"
       const createUserResponse = await createUser({
-        name: "createpostbob",
+        name: "deletepostbob",
         email: email,
         password: password,
       })
@@ -29,10 +27,7 @@ defineFeature(feature, (test) => {
       expect(loginUserResponse.status).toEqual(201)
 
       token = loginUserResponse.data.token
-    })
 
-    let postId
-    when("he writes new post", async () => {
       const createPostDto = makeDefaultCreatePostRequestBody()
       const createPostResponse = await createPost(createPostDto, token)
 
@@ -41,10 +36,14 @@ defineFeature(feature, (test) => {
       postId = createPostResponse.data.id
     })
 
-    then("server should add it to the blog", async () => {
-      const readPostResponse = await readPost(postId)
-      expect(readPostResponse.status).toEqual(200)
-      expect(readPostResponse.data).toMatchSchema(postResponseSchema)
+    when("he deletes post from the blog", async () => {
+      const deleteResponse = await deletePost(postId, token)
+      expect(deleteResponse.status).toEqual(204)
+    })
+
+    then("server should delete it", async () => {
+      const readResponse = await readPost(postId)
+      expect(readResponse.status).toEqual(404)
     })
   })
 })

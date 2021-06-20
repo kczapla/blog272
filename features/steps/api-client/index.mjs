@@ -19,9 +19,12 @@ export const readPost = async (postId) => {
   }
 }
 
-export const deletePost = async (postId) => {
+export const deletePost = async (postId, authToken) => {
+  const headers = { Authorization: `Bearer ${authToken}` }
   try {
-    return await axios.delete(getPostsUrl() + `/${postId}`)
+    return await axios.delete(getPostsUrl() + `/${postId}`, {
+      headers: headers,
+    })
   } catch (error) {
     return { status: error.response.status, data: error.response.data }
   }

@@ -51,6 +51,14 @@ async function main() {
 
   const db = client.db(mongoDbConfig.getMongoDbName())
 
+  const jwtTokenService = new JWTTokenService(
+    "3min",
+    securityConfig.getJwtSecret()
+  )
+  const jwtAuthenticationMiddleware = new JWTAuthenticationMiddleware(
+    jwtTokenService
+  )
+
   const yetAnotherPostRepository = new MongoPostRepository(db)
   const postView = new MongoPostView(db)
   const readPostService = new ReadPostService(postView)
@@ -59,7 +67,8 @@ async function main() {
   const blogResource = new BlogResource(
     createPostService,
     deletePostService,
-    readPostService
+    readPostService,
+    jwtAuthenticationMiddleware
   )
 
   const usersRepository = new MongoDBUsersRepository(db)
@@ -67,15 +76,6 @@ async function main() {
   const createUserUserCase = new CreateUserService(
     usersRepository,
     encriptionService
-  )
-
-  const jwtTokenService = new JWTTokenService(
-    "3min",
-    securityConfig.getJwtSecret()
-  )
-
-  const jwtAuthenticationMiddleware = new JWTAuthenticationMiddleware(
-    jwtTokenService
   )
 
   const deleteUserUseCase = new DeleteUserService(usersRepository)
