@@ -24,6 +24,7 @@ import {
   GetAuthenticationTokenService,
 } from "./domain/users/application"
 import { UserResource } from "./domain/users/resource"
+import { JWTAuthenticationMiddleware } from "./domain/users/middleware"
 import {
   CryptoEncriptionService,
   MongoDBUsersRepository,
@@ -50,6 +51,14 @@ async function main() {
 
   const db = client.db(mongoDbConfig.getMongoDbName())
 
+  const jwtTokenService = new JWTTokenService(
+    "3min",
+    securityConfig.getJwtSecret()
+  )
+  const jwtAuthenticationMiddleware = new JWTAuthenticationMiddleware(
+    jwtTokenService
+  )
+
   const yetAnotherPostRepository = new MongoPostRepository(db)
   const postView = new MongoPostView(db)
   const readPostService = new ReadPostService(postView)
@@ -58,7 +67,8 @@ async function main() {
   const blogResource = new BlogResource(
     createPostService,
     deletePostService,
-    readPostService
+    readPostService,
+    jwtAuthenticationMiddleware
   )
 
   const usersRepository = new MongoDBUsersRepository(db)
@@ -66,11 +76,6 @@ async function main() {
   const createUserUserCase = new CreateUserService(
     usersRepository,
     encriptionService
-  )
-
-  const jwtTokenService = new JWTTokenService(
-    "3min",
-    securityConfig.getJwtSecret()
   )
 
   const deleteUserUseCase = new DeleteUserService(usersRepository)
@@ -86,7 +91,8 @@ async function main() {
     deleteUserUseCase,
     jwtTokenService,
     getAuthenticationTokenUseCase,
-    usersRepository
+    usersRepository,
+    jwtAuthenticationMiddleware
   )
 
   const versionZeroRouter = new RouterComposite("/v0")

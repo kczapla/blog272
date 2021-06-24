@@ -13,13 +13,15 @@ class UserResource {
     deleteUserUseCase,
     tokenAuthenticationService,
     loginUserUseCase,
-    userRepository
+    userRepository,
+    authenticationMiddleware
   ) {
     this.createUserUseCase = createUserUseCase
     this.deleteUserUseCase = deleteUserUseCase
     this.tokenAuthenticationService = tokenAuthenticationService
     this.loginUserUseCase = loginUserUseCase
     this.userRepository = userRepository
+    this.authenticationMiddleware = authenticationMiddleware
   }
 
   async loginUser(ctx) {
@@ -56,36 +58,13 @@ class UserResource {
   }
 
   async deleteUser(ctx) {
-    const authHeader = ctx.request.headers["authorization"]
-    if (authHeader === null || authHeader === undefined) {
-      ctx.status = 400
-      ctx.body = { message: "JWT token is missing." }
-      return
-    }
-    if (!authHeader.startsWith("Bearer ")) {
-      ctx.status = 400
-      ctx.body = { message: "Invalid Authentication header format." }
-      return
-    }
-
-    const jwtToken = authHeader.replace("Bearer ", "")
-
-    let token
-    try {
-      token = this.tokenAuthenticationService.getUserFromToken(jwtToken)
-    } catch (e) {
-      ctx.status = 401
-      ctx.body = { message: "Invalid token." }
-      return
-    }
-
     const authorizationService = new RBACAuthorizationService(
-      token.id,
+      ctx.state.user.id,
       this.userRepository
     )
 
     const isAuthorized = await authorizationService.can("user:delete", {
-      requesterId: token.id,
+      requesterId: ctx.state.user.id,
       userId: ctx.request.params.userId,
     })
 
@@ -113,9 +92,13 @@ class UserResource {
     router.post("/users", async (ctx) => {
       await this.createUser(ctx)
     })
-    router.delete("/users/:userId", async (ctx) => {
-      await this.deleteUser(ctx)
-    })
+    router.delete(
+      "/users/:userId",
+      (ctx, next) => this.authenticationMiddleware.authenticate(ctx, next),
+      async (ctx) => {
+        await this.deleteUser(ctx)
+      }
+    )
     router.post("/login", async (ctx) => {
       await this.loginUser(ctx)
     })

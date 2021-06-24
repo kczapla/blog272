@@ -2,10 +2,16 @@ import Router from "koa-router"
 import { blogApplicationErrors } from "../application"
 
 class BlogResource {
-  constructor(createPostService, deletePostService, readPostService) {
+  constructor(
+    createPostService,
+    deletePostService,
+    readPostService,
+    authenticationMiddleware
+  ) {
     this.createPostService = createPostService
     this.deletePostService = deletePostService
     this.readPostService = readPostService
+    this.authenticationMiddleware = authenticationMiddleware
   }
 
   async createPost(ctx) {
@@ -61,15 +67,23 @@ class BlogResource {
 
   getRoutes() {
     const router = new Router()
-    router.post("/posts", async (ctx) => {
-      await this.createPost(ctx)
-    })
+    router.post(
+      "/posts",
+      (ctx, next) => this.authenticationMiddleware.authenticate(ctx, next),
+      async (ctx) => {
+        await this.createPost(ctx)
+      }
+    )
     router.get("/posts/:postId", async (ctx) => {
       await this.readPost(ctx)
     })
-    router.delete("/posts/:postId", async (ctx) => {
-      await this.deletePost(ctx)
-    })
+    router.delete(
+      "/posts/:postId",
+      (ctx, next) => this.authenticationMiddleware.authenticate(ctx, next),
+      async (ctx) => {
+        await this.deletePost(ctx)
+      }
+    )
 
     return router.routes()
   }
