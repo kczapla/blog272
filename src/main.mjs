@@ -31,6 +31,14 @@ import {
   JWTTokenService,
 } from "./domain/users/infrastructure"
 
+import {
+  MongoPostAuthView,
+  MongoUserAuthView,
+  SillyAccessPolicyRepository,
+} from "./domain/authorization/infrastructure"
+
+import { AuthorizationService } from "./domain/authorization/application"
+
 async function main() {
   const openApiDocPath = path.join(
     path.dirname(""),
@@ -51,6 +59,16 @@ async function main() {
 
   const db = client.db(mongoDbConfig.getMongoDbName())
 
+  const postAuthView = new MongoPostAuthView(db.collection("blog"))
+  const userAuthView = new MongoUserAuthView(db.collection("users"))
+  const accessPoliciesRepository = new SillyAccessPolicyRepository()
+
+  const authService = new AuthorizationService(
+    userAuthView,
+    postAuthView,
+    accessPoliciesRepository
+  )
+
   const jwtTokenService = new JWTTokenService(
     "3min",
     securityConfig.getJwtSecret()
@@ -68,7 +86,8 @@ async function main() {
     createPostService,
     deletePostService,
     readPostService,
-    jwtAuthenticationMiddleware
+    jwtAuthenticationMiddleware,
+    authService
   )
 
   const usersRepository = new MongoDBUsersRepository(db)
