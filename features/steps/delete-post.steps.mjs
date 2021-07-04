@@ -38,7 +38,6 @@ defineFeature(feature, (test) => {
 
     when("he deletes post from the blog", async () => {
       const deleteResponse = await deletePost(postId, token)
-      console.log(deleteResponse)
       expect(deleteResponse.status).toEqual(204)
     })
 

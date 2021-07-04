@@ -1,4 +1,5 @@
 import AuthorizationService from "../authorization-service"
+import NotFoundError from "../not-found-error"
 import { AccessPolicyCollection } from "../../domain"
 
 describe("isActionOnPostAllowed function", () => {
@@ -28,9 +29,9 @@ describe("isActionOnPostAllowed function", () => {
       accessPoliciesRepository
     )
 
-    expect(
+    await expect(
       authService.canUserDoActionOnPost("1", "test:delete", "1")
-    ).toBeTruthy()
+    ).resolves.toBeTruthy()
   })
   it("throws an error if action is unsupported", async () => {
     const accessPolicies = AccessPolicyCollection.create()
@@ -41,6 +42,41 @@ describe("isActionOnPostAllowed function", () => {
       accessPoliciesRepository
     )
 
-    expect(() => authService.canUserDoActionOnPost()).toThrowError()
+    await expect(() =>
+      authService.canUserDoActionOnPost()
+    ).rejects.toThrowError()
+  })
+  it("throws an error if user with given id does not exist", async () => {
+    accessPoliciesRepository.findByActionName.mockReturnValue({
+      empty: () => false,
+    })
+    usersQuery.findById.mockReturnValue(null)
+
+    const authService = new AuthorizationService(
+      usersQuery,
+      postsQuery,
+      accessPoliciesRepository
+    )
+
+    await expect(() =>
+      authService.canUserDoActionOnPost("1", "test", "1")
+    ).rejects.toThrow(NotFoundError)
+  })
+  it("throws an error if posts with given id does not exist", async () => {
+    accessPoliciesRepository.findByActionName.mockReturnValue({
+      empty: () => false,
+    })
+    usersQuery.findById.mockReturnValue({ id: "aaaa" })
+    postsQuery.findById.mockReturnValue(null)
+
+    const authService = new AuthorizationService(
+      usersQuery,
+      postsQuery,
+      accessPoliciesRepository
+    )
+
+    await expect(() =>
+      authService.canUserDoActionOnPost("1", "test", "1")
+    ).rejects.toThrow(NotFoundError)
   })
 })

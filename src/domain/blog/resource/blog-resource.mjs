@@ -6,16 +6,19 @@ class BlogResource {
     createPostService,
     deletePostService,
     readPostService,
-    authenticationMiddleware
+    authenticationMiddleware,
+    authorizationService
   ) {
     this.createPostService = createPostService
     this.deletePostService = deletePostService
     this.readPostService = readPostService
     this.authenticationMiddleware = authenticationMiddleware
+    this.authorizationService = authorizationService
   }
 
   async createPost(ctx) {
     const createPostDto = ctx.request.body
+    createPostDto.author.id = ctx.state.user.id
 
     try {
       await this.createPostService.create(createPostDto)
@@ -50,6 +53,27 @@ class BlogResource {
   }
 
   async deletePost(ctx) {
+    try {
+      const canDo = await this.authorizationService.canUserDoActionOnPost(
+        ctx.state.user.id,
+        "post:delete",
+        ctx.request.params.postId
+      )
+
+      if (!canDo) {
+        ctx.status = 403
+        ctx.body = {
+          message: `User(id=${ctx.state.user.id}) is not authorized to delete Post(id=${ctx.request.params.postId})`,
+          code: 1,
+        }
+        return
+      }
+    } catch (e) {
+      ctx.status = 500
+      ctx.body = { message: e.message, code: 1 }
+      return
+    }
+
     try {
       ctx.status = 200
       ctx.body = await this.deletePostService.delete(ctx.request.params)
