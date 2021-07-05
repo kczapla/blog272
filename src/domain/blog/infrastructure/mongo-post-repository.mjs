@@ -30,7 +30,7 @@ class MongoPostRepository {
       _id: new ObjectId(post.getId().getValue()),
       title: post.getTitle().getValue(),
       author: {
-        id: post.getAuthor().getId().getValue(),
+        id: new ObjectId(post.getAuthor().getId().getValue()),
         name: post.getAuthor().getAuthorName().getValue(),
       },
       publishingDate: post.getPublishingDate().getValue(),
