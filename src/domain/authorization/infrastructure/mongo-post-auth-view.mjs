@@ -9,8 +9,15 @@ class MongoPostAuthView {
   async findById(postId) {
     const post = await this.postCollection.findOne(
       { _id: new ObjectId(postId.getValue()) },
-      { projection: { _id: 0, id: "$_id", author: { id: 1 } } }
+      {
+        projection: {
+          _id: 0,
+          id: { $toString: "$_id" },
+          author: { id: { $toString: "$author.id" } },
+        },
+      }
     )
+
     return post
   }
 }

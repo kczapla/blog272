@@ -1,3 +1,6 @@
+import bson from "bson"
+const { ObjectId } = bson
+
 class MongoUserAuthView {
   constructor(userCollection) {
     this.userCollection = userCollection
@@ -5,8 +8,8 @@ class MongoUserAuthView {
 
   async findById(userId) {
     return await this.userCollection.findOne(
-      { _id: userId.getValue() },
-      { projection: { _id: 0, id: "$_id" } }
+      { _id: new ObjectId(userId.getValue()) },
+      { projection: { _id: 0, id: { $toString: "$_id" } } }
     )
   }
 }

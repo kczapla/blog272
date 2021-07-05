@@ -15,13 +15,15 @@ class MongoDBUsersRepository {
   }
 
   async findById(userId) {
-    const rawUser = await this.usersCollection.findOne({ _id: userId })
+    const rawUser = await this.usersCollection.findOne({
+      _id: new ObjectId(userId),
+    })
 
     if (rawUser === null) {
       return rawUser
     }
 
-    const id = Id.create(rawUser._id)
+    const id = Id.create(rawUser._id.toString())
     const name = Name.create(rawUser.name)
     const salt = Salt.create(rawUser.salt)
     const email = Email.create(rawUser.email)
@@ -38,7 +40,7 @@ class MongoDBUsersRepository {
       return rawUser
     }
 
-    const id = Id.create(rawUser._id)
+    const id = Id.create(rawUser._id.toString())
     const name = Name.create(rawUser.name)
     const salt = Salt.create(rawUser.salt)
     const email = Email.create(rawUser.email)
@@ -55,7 +57,7 @@ class MongoDBUsersRepository {
 
   async save(user) {
     await this.usersCollection.insertOne({
-      _id: user.getId().getValue(),
+      _id: new ObjectId(user.getId().getValue()),
       name: user.getName().getValue(),
       email: user.getEmail().getValue(),
       password: user.getEncryptedPassword().getValue(),
@@ -66,7 +68,7 @@ class MongoDBUsersRepository {
 
   async deleteById(userId) {
     await this.usersCollection.deleteOne({
-      _id: userId,
+      _id: new ObjectId(userId),
     })
   }
 }
