@@ -1,32 +1,19 @@
+import AuthorizationServiceTemplate from "./authorization-service-template"
 import NotFoundError from "./not-found-error"
 import { Id } from "../../core/domain"
 
-class AuthorizationService {
-  constructor(userQuery, postQuery, accessPolicyRepository) {
-    this.userQuery = userQuery
+class AuthorizationService extends AuthorizationServiceTemplate {
+  constructor(userQuery, postQuery, accessPoliciesRepository) {
+    super(userQuery, accessPoliciesRepository)
     this.postQuery = postQuery
-    this.accessPolicyRepository = accessPolicyRepository
   }
 
-  async canUserDoActionOnPost(userId, actionName, postId) {
-    const accessPolicies = this.accessPolicyRepository.findByActionName(
-      actionName
-    )
-    if (accessPolicies.empty()) {
-      throw Error(`Unknow action ${actionName}`)
-    }
-
-    const users = await this.userQuery.findById(Id.create(userId))
-    if (users === null) {
-      throw new NotFoundError("User", userId)
-    }
-
-    const posts = await this.postQuery.findById(Id.create(postId))
-    if (posts === null) {
+  async getResourceById(postId) {
+    const post = await this.postQuery.findById(Id.create(postId))
+    if (post === null) {
       throw new NotFoundError("Post", postId)
     }
-
-    return accessPolicies.isAnyPolicyCompliant(users, posts)
+    return post
   }
 }
 

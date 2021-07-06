@@ -37,7 +37,10 @@ import {
   SillyAccessPolicyRepository,
 } from "./domain/authorization/infrastructure"
 
-import { AuthorizationService } from "./domain/authorization/application"
+import {
+  AuthorizationService,
+  UserAuthorizationService,
+} from "./domain/authorization/application"
 
 async function main() {
   const openApiDocPath = path.join(
@@ -66,6 +69,12 @@ async function main() {
   const authService = new AuthorizationService(
     userAuthView,
     postAuthView,
+    accessPoliciesRepository
+  )
+
+  const userAuthService = new UserAuthorizationService(
+    userAuthView,
+    userAuthView,
     accessPoliciesRepository
   )
 
@@ -111,7 +120,8 @@ async function main() {
     jwtTokenService,
     getAuthenticationTokenUseCase,
     usersRepository,
-    jwtAuthenticationMiddleware
+    jwtAuthenticationMiddleware,
+    userAuthService
   )
 
   const versionZeroRouter = new RouterComposite("/v0")

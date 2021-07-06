@@ -29,9 +29,13 @@ describe("isActionOnPostAllowed function", () => {
       accessPoliciesRepository
     )
 
-    await expect(
-      authService.canUserDoActionOnPost("1", "test:delete", "1")
-    ).resolves.toBeTruthy()
+    const isAuthorized = await authService.isUserAuthorizedToDoActionOnResource(
+      "1",
+      "test:delete",
+      "1"
+    )
+
+    expect(isAuthorized).toBeTruthy()
   })
   it("throws an error if action is unsupported", async () => {
     const accessPolicies = AccessPolicyCollection.create()
@@ -43,7 +47,7 @@ describe("isActionOnPostAllowed function", () => {
     )
 
     await expect(() =>
-      authService.canUserDoActionOnPost()
+      authService.isUserAuthorizedToDoActionOnResource()
     ).rejects.toThrowError()
   })
   it("throws an error if user with given id does not exist", async () => {
@@ -59,7 +63,7 @@ describe("isActionOnPostAllowed function", () => {
     )
 
     await expect(() =>
-      authService.canUserDoActionOnPost("1", "test", "1")
+      authService.isUserAuthorizedToDoActionOnResource("1", "test", "1")
     ).rejects.toThrow(NotFoundError)
   })
   it("throws an error if posts with given id does not exist", async () => {
@@ -76,7 +80,7 @@ describe("isActionOnPostAllowed function", () => {
     )
 
     await expect(() =>
-      authService.canUserDoActionOnPost("1", "test", "1")
+      authService.isUserAuthorizedToDoActionOnResource("1", "test", "1")
     ).rejects.toThrow(NotFoundError)
   })
 })

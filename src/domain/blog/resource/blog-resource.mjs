@@ -25,7 +25,6 @@ class BlogResource {
       ctx.body = await this.readPostService.findByTitle(createPostDto.title)
       ctx.status = 201
     } catch (e) {
-      console.log(e)
       ctx.response.body = { message: e.message }
       if (e instanceof blogApplicationErrors.InvalidPostData) {
         ctx.response.status = 400
@@ -54,7 +53,7 @@ class BlogResource {
 
   async deletePost(ctx) {
     try {
-      const canDo = await this.authorizationService.canUserDoActionOnPost(
+      const canDo = await this.authorizationService.isUserAuthorizedToDoActionOnResource(
         ctx.state.user.id,
         "post:delete",
         ctx.request.params.postId

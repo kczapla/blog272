@@ -61,6 +61,7 @@ defineFeature(feature, (test) => {
         email: email,
         password: password,
       })
+      console.log(loginUserResponse)
       expect(loginUserResponse.status).toEqual(201)
       const token = loginUserResponse.data.token
       const createPostDto = makeDefaultCreatePostRequestBody()

@@ -96,6 +96,7 @@ defineFeature(feature, (test) => {
     })
 
     then("the server rejects his request and returns an error", () => {
+      console.log(deleteResponse)
       expect(deleteResponse.status).toEqual(403)
     })
   })
