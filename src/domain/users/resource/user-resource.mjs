@@ -1,5 +1,4 @@
 import Router from "koa-router"
-import { RBACAuthorizationService } from "../application/"
 import {
   UserAlreadyExists,
   InvalidUserData,
@@ -14,7 +13,8 @@ class UserResource {
     tokenAuthenticationService,
     loginUserUseCase,
     userRepository,
-    authenticationMiddleware
+    authenticationMiddleware,
+    authorizationService
   ) {
     this.createUserUseCase = createUserUseCase
     this.deleteUserUseCase = deleteUserUseCase
@@ -22,6 +22,7 @@ class UserResource {
     this.loginUserUseCase = loginUserUseCase
     this.userRepository = userRepository
     this.authenticationMiddleware = authenticationMiddleware
+    this.authorizationService = authorizationService
   }
 
   async loginUser(ctx) {
@@ -58,21 +59,24 @@ class UserResource {
   }
 
   async deleteUser(ctx) {
-    const authorizationService = new RBACAuthorizationService(
-      ctx.state.user.id,
-      this.userRepository
-    )
+    try {
+      const canDo = await this.authorizationService.isUserAuthorizedToDoActionOnResource(
+        ctx.state.user.id,
+        "user:delete",
+        ctx.request.params.userId
+      )
 
-    const isAuthorized = await authorizationService.can("user:delete", {
-      requesterId: ctx.state.user.id,
-      userId: ctx.request.params.userId,
-    })
-
-    if (!isAuthorized) {
-      ctx.status = 403
-      ctx.body = {
-        message: "User is not authorized to perform this operation",
+      if (!canDo) {
+        ctx.status = 403
+        ctx.body = {
+          message: `User(id=${ctx.state.user.id}) is not authorized to delete User(id=${ctx.request.params.postId})`,
+          code: 1,
+        }
+        return
       }
+    } catch (e) {
+      ctx.status = 500
+      ctx.body = { message: e.message, code: 1 }
       return
     }
 
