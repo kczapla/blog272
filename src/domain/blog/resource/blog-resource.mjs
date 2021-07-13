@@ -33,11 +33,26 @@ class BlogResource {
       }
     }
   }
+  async commentPost(ctx) {
+    const commentPostDto = {
+      postId: ctx.request.params.postId,
+      content: ctx.request.body.content,
+      authorId: ctx.state.user.id,
+    }
+    ctx.status = 201
+  }
 
   async readPost(ctx) {
     const postId = ctx.request.params.postId
     try {
       ctx.body = await this.readPostService.read({ postId: postId })
+      ctx.body.comments = [
+        {
+          authorId: "asdfasdfqew1234123",
+          publishingDate: "14/07/1993",
+          content: "ebe ebe ebe",
+        },
+      ]
       ctx.status = 200
     } catch (e) {
       ctx.body = { message: e.message, code: 1 }
@@ -90,6 +105,13 @@ class BlogResource {
 
   getRoutes() {
     const router = new Router()
+    router.post(
+      "/posts/:postId/comments",
+      (ctx, next) => this.authenticationMiddleware.authenticate(ctx, next),
+      async (ctx) => {
+        await this.commentPost(ctx)
+      }
+    )
     router.post(
       "/posts",
       (ctx, next) => this.authenticationMiddleware.authenticate(ctx, next),
