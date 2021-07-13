@@ -1,6 +1,22 @@
 import axios from "axios"
 
-import { getLoginUrl, getPostsUrl, getUsersUrl } from "../config"
+import {
+  getLoginUrl,
+  getPostsUrl,
+  getUsersUrl,
+  getCommentsUrl,
+} from "../config"
+
+export const createComment = async (postId, commentRequestBody, authToken) => {
+  const headers = { Authorization: `Bearer ${authToken}` }
+  try {
+    return await axios.post(getCommentsUrl(postId), commentRequestBody, {
+      headers: headers,
+    })
+  } catch (error) {
+    return { status: error.response.status, data: error.response.data }
+  }
+}
 
 export const createPost = async (postRequestBody, authToken) => {
   const headers = { Authorization: `Bearer ${authToken}` }

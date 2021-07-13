@@ -15,3 +15,7 @@ export const getUsersUrl = () => {
 export const getLoginUrl = () => {
   return getAppUrl() + "/api/v0/login"
 }
+
+export const getCommentsUrl = (postId) => {
+  return getAppUrl() + `/api/v0/posts/${postId}/comments`
+}
