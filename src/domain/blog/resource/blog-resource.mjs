@@ -33,12 +33,14 @@ class BlogResource {
       }
     }
   }
+
   async commentPost(ctx) {
     const commentPostDto = {
       postId: ctx.request.params.postId,
       content: ctx.request.body.content,
       authorId: ctx.state.user.id,
     }
+    console.log(commentPostDto)
     ctx.status = 201
   }
 
