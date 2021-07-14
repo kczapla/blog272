@@ -7,13 +7,16 @@ class BlogResource {
     deletePostService,
     readPostService,
     authenticationMiddleware,
-    authorizationService
+    authorizationService,
+    commentPostService
   ) {
     this.createPostService = createPostService
+    this.commentPostService = commentPostService
     this.deletePostService = deletePostService
     this.readPostService = readPostService
     this.authenticationMiddleware = authenticationMiddleware
     this.authorizationService = authorizationService
+    this.commentPostService = commentPostService
   }
 
   async createPost(ctx) {
@@ -35,13 +38,46 @@ class BlogResource {
   }
 
   async commentPost(ctx) {
+    try {
+      const canDo = await this.authorizationService.isUserAuthorizedToDoActionOnResource(
+        ctx.state.user.id,
+        "post:comment",
+        ctx.request.params.postId
+      )
+
+      if (!canDo) {
+        ctx.status = 403
+        ctx.body = {
+          message: `User(id=${ctx.state.user.id}) is not authorized to add comment to Post(id=${ctx.request.params.postId})`,
+          code: 1,
+        }
+        return
+      }
+    } catch (e) {
+      ctx.status = 500
+      ctx.body = { message: e.message, code: 1 }
+      return
+    }
+
     const commentPostDto = {
       postId: ctx.request.params.postId,
       content: ctx.request.body.content,
       authorId: ctx.state.user.id,
     }
-    console.log(commentPostDto)
-    ctx.status = 201
+
+    try {
+      ctx.status = 201
+      ctx.body = await this.commentPostService.commentPost(commentPostDto)
+    } catch (e) {
+      ctx.body = { message: e.message }
+      if (e instanceof blogApplicationErrors.PostNotFound) {
+        ctx.status = 404
+      } else if (e instanceof blogApplicationErrors.InvalidPostData) {
+        ctx.status = 400
+      } else {
+        ctx.status = 500
+      }
+    }
   }
 
   async readPost(ctx) {

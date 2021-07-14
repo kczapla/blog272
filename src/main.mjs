@@ -96,7 +96,8 @@ async function main() {
     deletePostService,
     readPostService,
     jwtAuthenticationMiddleware,
-    authService
+    authService,
+    { commentPost: async () => console.log("commentPost called") }
   )
 
   const usersRepository = new MongoDBUsersRepository(db)

@@ -71,7 +71,7 @@ defineFeature(feature, (test) => {
         createCommentRequestBody,
         bobsAuthToken
       )
-      expect(createCommentByBobResponse.status).toEqual(201)
+      expect(createCommentByBobResponse.status).toEqual(204)
     })
     then("the server should add Bob's comment to Mark's post", async () => {
       const getMarksPostResponse = await readPost(marksPostId)

@@ -9,7 +9,7 @@ class MongoUserAuthView {
   async findById(userId) {
     return await this.userCollection.findOne(
       { _id: new ObjectId(userId.getValue()) },
-      { projection: { _id: 0, id: { $toString: "$_id" } } }
+      { projection: { _id: 0, id: { $toString: "$_id" }, role: 1 } }
     )
   }
 }
